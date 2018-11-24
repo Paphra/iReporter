@@ -1,0 +1,150 @@
+<!-- signup.html-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" >
+        <meta name="viewport" content="width=device-width, intial-scale=1" >
+        <title>SignUp - iReporter</title>
+        
+        
+        <!-- link my css file-->
+        <link href="assets/css/my.css" rel="stylesheet" />
+        <!-- link my js file -->
+        <script type="text/javascript" src="assets/js/my.js" ></script>
+
+    </head>
+    <body>
+        <div class="i-body">
+            <frame>
+                <div class="i-header">
+                    <div class="i-nav">
+                        <nav>
+                            <ul class="i-nav-list">
+                                <li class="list-item current"><a href="signup.html" >Sign Up</a></li>
+                                <li class="list-item"><a href="signin.html" >Sign In</a></li>
+                                <li class="list-item"><a href="about.html">About</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="title">
+                    <h1 class='i-title1'>iReporter</h1>
+                    <h4 class='i-slogan'><i>... seen it? Report it ...</i></h4>
+                </div>
+
+                <hr/>
+
+                <div class="i-choice-wrapper">
+                    <div class="i-choice">
+                        <div class="signup">
+                            <form class="signup-form" method="POST" action="" name="form-signup"
+                                onsubmit="return signup()">
+                                <h3 class="i-title3">Sign Up</h3>
+                                <fieldset>
+                                    <table align="center" width="90%">
+                                        <tr>
+                                            <td align="right">First Name:</td>
+                                            <td align="left">
+                                                <input  type="text" name="firstName" size="20" maxlength="25" required 
+                                                    minlength="3" placeholder="Epaphradito"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Last Name:</td>
+                                            <td align="left">
+                                                <input  type="text" name="lastName" size="20" maxlength="25" required 
+                                                    minlength="3" placeholder="Lugayavu"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Other Names:</td>
+                                            <td align="left">
+                                                <input  type="text" name="otherName" size="20" maxlength="25" required 
+                                                    minlength="3" placeholder="Paphra"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Gender:</td>
+                                            <td align="left">
+                                                <select name="gender" id="gender">
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Occupation:</td>
+                                            <td align="left">
+                                                <input type="text" name="occupation" placeholder="Work" size="30"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Address:</td>
+                                            <td align="left">
+                                                <input type="text" name="address" placeholder="Village/Town, District, Country"
+                                                    size="30" required/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Email Address:</td>
+                                            <td align="left">
+                                                <input type="email" name="email" placeholder="user@example.com" size="30"
+                                                    required/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Phone Number:</td>
+                                            <td align="left">
+                                                <input type="tel" name="phoneNumber" placeholder="+code phone number" size="20"
+                                                    required/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Username:</td>
+                                            <td align="left">
+                                                <input type="text" name="username" size="20" maxlength="10" minlength="5" required 
+                                                    placeholder="Username" oninput="checkUname(this.value)"/>
+                                                <div id="usernameErr"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Password:</td>
+                                            <td align="left">
+                                                <input type="password" name="password" maxlength="20" minlength="8"
+                                                    required placeholder="Password" oninput="checkPassword()"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Confirm Password:</td>
+                                            <td align="left">
+                                                <input type="password" name="confirmPassword" maxlength="20" minlength="8"
+                                                    required placeholder="Confirm Password" oninput="checkPassword()"/>
+                                                <div id="passwordError"></div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <hr/>
+                                    <input type="submit" name="signupBtn" value="Sign Up" class="btn-signup"/>                                        
+                                </fieldset>
+                            </form>
+                        </div>
+                        
+                        <hr/>
+                        <div class="c-signin">
+                            <p>Already have an Account?</p>
+                            <a href="signin.html"><button class="btn-signin">Sign In</button></a>
+                        </div>
+                    </div>
+                </div>
+            </frame>
+        </div>
+    </body>
+    <hr/>
+    <footer class='footer-wrapper'>
+        <div class='footer'>
+            <p id='foot'>&copy; 2018 iReporter</p>
+        </div>
+    </footer>
+</html>
