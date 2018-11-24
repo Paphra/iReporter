@@ -314,7 +314,7 @@ function loadUserDetails(fi_id) {
     // code here
     var holder = document.getElementById("detail-fi");
     var table = "<form name='form-user-details' ><fieldset>" +
-        "<table align='center'>" +
+        "<table width='90%' align='center'>" +
         "<tr><td align='right' width='50%'>Type:</td><td align='left'>Red-Flag</td ></tr>" +
         "<tr><td align='right' width='50%'>Status:</td><td align='left'>Status [Draft, Under Investigation, Resolved, Rejectd]</td ></tr>" +
         "<tr><td align='right'>Subject:</td><td align='left'>Subject Matter</td></tr>" +
@@ -339,7 +339,7 @@ function loadAdminDetails(fi_id) {
     // code here
     var holder = document.getElementById("detail-fi");
     var table = "<form name='form-admin-details' ><fieldset>" +
-        "<table align='center'>" +
+        "<table width='90%' align='center'>" +
         "<tr><td align='right' width='50%'>Type:</td><td align='left'>Red-Flag</td ></tr>" +
         "<tr><td align='right' width='50%'>By:</td><td align='left'>Full Name of The User</td ></tr>" +
         "<tr><td align='right' width='50%'>Status:</td><td align='left'>" +
@@ -378,7 +378,7 @@ function loadEdit(fi_id) {
     var holder = document.getElementById("edit-fi");
     var form = "<form name='form-edit' action='' onsubmit='saveEdit(\"fi_id\")' >" +
         "<fieldset>" +
-        "<table align='center'>" +
+        "<table width='90%' align='center'>" +
         "<tr><td align='right' width='50%'>Type:</td><td align='left'>" +
         "<select name='type' size='1' class='s-type'><option value='flag'>Red-Flag</option>" +
         "<option value='intervention'>Intervention</option></select ></td ></tr>" +
