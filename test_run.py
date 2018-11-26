@@ -1,15 +1,24 @@
 import unittest as ut
 from flask import jsonify, request, Response, url_for
 from run import app
+import datetime
 
 class RunTestCase(ut.TestCase):
 
     def setUp(self):
+
         self.test_new_flag_record_data = {
             "id": 23219,
             "title": "Corruption much",
             "comment": "please, help us. We are dying.",
-            "type": "Red-Flag"
+            "type": "Red-Flag",
+            "createdOn": datetime.date.today().isoformat(),
+            "createdBy": 2324332234,
+            "location": "0.3421, 32.2231",
+            "status": "Draft",
+            "Images": ["image1", "image2"],
+            "Videos": ["video1", "video2"],
+            "otherFiles": ["file1","file2"]
         }
 
     def tearDown(self):
