@@ -13,8 +13,9 @@ The inner site is not accessible to the outside world because the code for the a
 **Signup** is accessible
 **Signin** is accessible
 **About** is accessible
-To access other pages:
+### To access other pages:
 *https://paphra.github.io/iReporter/profile.html* for the profile [User Profile]
+
 *https://paphra.github.io/iReporter/admin.html* for the Admin page.
 
 Others like the create, details, edit, change status, and view all are then accessed using different buttons
@@ -22,3 +23,5 @@ Others like the create, details, edit, change status, and view all are then acce
 ## Next Steps
 The next thing would be to design the code to enable sigin and signup process.
 I have made it in a way that the js framework shall be used for form validation/authentication and loading of data.
+
+[![Build Status](https://travis-ci.com/Paphra/iReporter.svg?branch=develop)](https://travis-ci.com/Paphra/iReporter)
