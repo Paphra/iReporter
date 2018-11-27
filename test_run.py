@@ -172,6 +172,14 @@ class RunTestCase(ut.TestCase):
             "address": "Entebbe, Wakiso, Uganda"
         }
 
+        self.test_user_name_exists = {"username":'Paphra', "email":"ppaapp@gmail.com"}
+        self.test_user_name_does_not_exist ={"username":"Lamwaka", "email":"lamwa@yahoo.com"}
+        self.test_email_exists = {"email":'paphra.me@gmail.com', "username":"Paparo"}
+        self.test_email_does_not_exist = {"email": "marian256@yahoo.com", "username": "Mariana"}
+        self.test_all_user_info_exists = {"username":'Paphra', "email":"paphra@gmail.com"}
+        
+
+
     def tearDown(self):
         pass
 
@@ -290,7 +298,35 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as c:
             rv = c.get("/api/v1/red-flags")
             assert Response.get_json(rv) == {"error": "json object error", "status": 400}
-    
+
+    def test_get_user_call(self):
+        with app.test_client() as t:
+            rvv = t.get("/api/v1/users")
+            assert request.method == 'GET'
+            assert request.path == '/api/v1/users'
+            assert request.get_json() == None
+
+    def test_get_user_given_username(self):
+        with app.test_client() as cc:
+            rv = cc.get("/api/v1/users", json=self.test_user_name_exists)
+            rv2 = cc.get("/api/v1/users", json=self.test_user_name_does_not_exist)
+
+            assert Response.get_json(rv) == {
+                "data": [self.new_user1],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {"data":[{"id":0, "message":"User does not exist"}], "status":200}
+
+    def test_get_user_given_email(self):
+        with app.test_client() as cc:
+            rv = cc.get("/api/v1/users", json=self.test_email_exists)
+            rv2 = cc.get("/api/v1/users", json=self.test_email_does_not_exist)
+
+            assert Response.get_json(rv) == {
+                "data": [self.new_user1],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {"data":[{"id":0, "message":"User does not exist"}], "status":200}
 
 if __name__ == '__main__':
     ut.main()

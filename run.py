@@ -95,8 +95,7 @@ def get_flags(user_id):
 
 def user_is_admin(user_id):
     for user in all_users:
-        if user["id"] == user_id:
-            if user["isAdmin"]:
+        if user["id"] == user_id and user["isAdmin"]:
                 return True
     return False
 
@@ -144,12 +143,43 @@ def user_exists(username, email):
         return False
 
     for user in all_users:
-        if user['username'] == username:
-            return True
-        elif user['email'] == email:
+        if user['username'] == username or user['email'] == email:
             return True
     
     return False
+
+@app.route("/api/v1/users", methods=["GET"])
+def get_user_given_username_or_email():
+    try:
+        json_data = request.get_json()
+        username = json_data["username"]
+        email = json_data["email"]
+
+        data = get_user_details(username, email)
+        res = {
+            "status": 200,
+            "data": [data]
+        }
+
+        return (jsonify(res), 200)
+
+    except:
+        res = {
+            "status":400,
+            "error":"json object error"
+        }
+        return (jsonify(res), 400)
+
+def get_user_details(username, email):
+    if len(all_users) == 0:
+        return {"id":0, "message":"User does not exist"}
+
+    for user in all_users:
+        if user['username'] == username or user["email"] == email:
+            return user
+
+    return {"id":0, "message":"User does not exist"}
+
 
 def add_user(json_data):
     all_users.append(json_data)
