@@ -184,5 +184,31 @@ def get_user_details(username, email):
 def add_user(json_data):
     all_users.append(json_data)
 
+
+@app.route("/api/v1/red-flags/<flag_id>")
+def get_specific_flag(flag_id):
+
+    flag = get_flag(flag_id)
+    if flag == None:
+        res = {
+            "status": 200,
+            "data": []
+        }
+    else:
+        res = {
+            "status": 200,
+            "data": [flag]
+        }
+
+    return (jsonify(res), 200)
+
+
+def get_flag(flag_id):
+    for flag in all_flags:
+        if flag["id"] == int(flag_id):
+            return flag
+    
+    return None
+
 if __name__ == '__main__':
     app.run()
