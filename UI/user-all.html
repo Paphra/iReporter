@@ -1,0 +1,64 @@
+<!-- user-all.html-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" >
+        <meta name="viewport" content="width=device-width, intial-scale=1" >
+        <title>My iReports</title>
+        
+        <!-- link my css file-->
+        <link href="assets/css/my.css" rel="stylesheet" />
+
+    </head>
+    <body>
+        <div class="a-body">
+            
+            <div class="a-header">
+                <div class="a-nav">
+                    <nav>
+                        <ul class="a-nav-list">
+                            <li class="a-list-item"><a href="profile.html" >Profile</a></li>
+                            <li class="a-list-item a-current"><a href="user-all.html" >My iReports</a></li>
+                            <li class="a-list-item"><a href="create.html">New</a></li>
+                            <li class="a-list-item"><a onclick="logout()" >Logout</a></li>
+                        </ul>                        
+                    </nav>
+                </div>
+            </div>
+
+
+            <h1  class="i-title1"><a href="admin.html">iReporter</a></h1>
+            <hr/>
+
+            <div class="fi-wrapper">
+                <h2 class="a-title2">All My iReports<br/>
+                <i>Deleting and Editing is Possible for Reports with Draft statuses</i></h2>
+                <div class="all-fi-wrapper">
+                    <div  class="all-fi-list">
+                        <ul id="all-fi-list-user">
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+
+        </div>
+    </body>
+    <hr/>
+    <footer class='footer-wrapper'>
+        <div class='footer'>
+            <p id='foot'>&copy; 2018 iReporter</p>
+        </div>
+
+        <!-- link my js file -->
+        <script src="assets/js/my.js" type="text/javascript" ></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+        <script type="text/javascript">
+            // Load all the user flags and Interventions
+            loadAllUserReports();
+        </script>
+    </footer>
+</html>
