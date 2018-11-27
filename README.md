@@ -1,4 +1,3 @@
-
 [![Build Status](https://travis-ci.com/Paphra/iReporter.svg?branch=develop)](https://travis-ci.com/Paphra/iReporter)
 
 [![Coverage Status](https://coveralls.io/repos/github/Paphra/iReporter/badge.svg?branch=develop)](https://coveralls.io/github/Paphra/iReporter?branch=develop)
