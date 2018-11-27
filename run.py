@@ -35,7 +35,7 @@ def post_red_flag():
                 "data": [
                     {
                         "id": data.get("id"),
-                        "message":"Created a red-flag record"
+                        "message":"Created red-flag record"
                     }
                 ]
             }

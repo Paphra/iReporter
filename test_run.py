@@ -75,11 +75,11 @@ class RunTestCase(ut.TestCase):
             "otherFiles": ["file1","file2"]
         }
 
-        self.successful_create = {"data":[{"id":23219,"message":"Created a red-flag record"}],"status":201}
-        self.successful_create2 = {"data":[{"id":23210,"message":"Created a red-flag record"}],"status":201}
-        self.successful_create3 = {"data":[{"id":23212,"message":"Created a red-flag record"}],"status":201}
-        self.successful_create4 = {"data":[{"id":23239,"message":"Created a red-flag record"}],"status":201}
-        self.successful_create5 = {"data": [{"id": 23230, "message": "Created a red-flag record"}], "status": 201}
+        self.successful_create = {"data":[{"id":23219,"message":"Created red-flag record"}],"status":201}
+        self.successful_create2 = {"data":[{"id":23210,"message":"Created red-flag record"}],"status":201}
+        self.successful_create3 = {"data":[{"id":23212,"message":"Created red-flag record"}],"status":201}
+        self.successful_create4 = {"data":[{"id":23239,"message":"Created red-flag record"}],"status":201}
+        self.successful_create5 = {"data": [{"id": 23230, "message": "Created red-flag record"}], "status": 201}
         
         self.new_user1 = {
             "id": 3324332234,
