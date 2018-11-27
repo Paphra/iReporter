@@ -1,23 +1,23 @@
 language: python
-python:
- - "2.7"
- - "3.4"
-before_install:
-  - pip install pytest pytest-cov 
-  - pip install python-coveralls  # Add me to install python-coveralls
-  - pip install coveralls
-  - pip install coverage       # Add me to install coverage.py
-  - pip install nose           # Add me to install nose
 
-# command to install dependencies
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+branches:
+  only:
+    - develop
+
 install:
- - pip install -r requirements.txt
-# command to run tests
+  - pip install -r requirements.txt
+  - pip install tox-travis
+
 script:
- - pytest
- - nosetests --with-coverage
- - coverage run --source=mypkg setup.py test
+  - tox
+  - coverage run --source icon_font_to_png -m py.test
+  - coverage report -m
 
 after_success:
- - coveralls
- - CODECLIMATE_REPO_TOKEN=e071f0f3de96c46bf8471f6d69eb7fdd60480076 codeclimate-test-reporter
+  - coveralls
