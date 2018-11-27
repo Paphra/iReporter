@@ -179,6 +179,11 @@ class RunTestCase(ut.TestCase):
         self.test_all_user_info_exists = {"username":'Paphra', "email":"paphra@gmail.com"}
         
 
+        self.test_get_red_flag_id_data = 23219
+        self.test_get_red_flag_id_inter = 23210
+        self.test_get_red_flag_id_under_inv = 23212
+        self.test_get_red_flag_id_not_for_user = 23239
+        self.test_get_red_flag_id5_does_not_exist = 23244
 
     def tearDown(self):
         pass
@@ -327,6 +332,28 @@ class RunTestCase(ut.TestCase):
                 "status": 200
             }
             assert Response.get_json(rv2) == {"data":[{"id":0, "message":"User does not exist"}], "status":200}
+
+    def test_get_specific_red_flag_call(self):
+        with app.test_client() as t:
+            rvv = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
+            assert request.method == 'GET'
+            assert request.path == "/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data))
+            assert request.get_json() == None
+
+    def test_get_specific_red_flag_given_id(self):
+        with app.test_client() as t:
+            rv = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
+            rv2 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_inter)))
+            rv3 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_under_inv)))
+            rv4 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_not_for_user)))
+            rv5 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id5_does_not_exist)))
+
+            assert Response.get_json(rv)["data"] == [self.test_new_flag_record_data]
+            assert Response.get_json(rv2)["data"] == [self.test_get_flag_records_inter]
+            assert Response.get_json(rv3)["data"] == [self.test_get_flag_records_under_inv]
+            assert Response.get_json(rv4)["data"] == [self.test_get_flag_records_not_for_user]
+            assert Response.get_json(rv5)["data"] == []           
+
 
 if __name__ == '__main__':
     ut.main()
