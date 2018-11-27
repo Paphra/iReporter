@@ -16,5 +16,8 @@ install:
 script:
  - pytest
  - nosetests --with-coverage
+ - coverage run --source=mypkg setup.py test
+
 after_success:
  - coveralls
+ - CODECLIMATE_REPO_TOKEN=e071f0f3de96c46bf8471f6d69eb7fdd60480076 codeclimate-test-reporter
