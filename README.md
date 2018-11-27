@@ -1,3 +1,6 @@
+
+# [![Build Status](https://travis-ci.com/Paphra/iReporter.svg?branch=develop)](https://travis-ci.com/Paphra/iReporter)
+
 # iRporter
 Corruption is a huge bane to Africaâ€™s development. African countries must develop novel and localised solutions that will curb this menace, hence the birth of iReporter. iReporter enables any/every citizen to bring any form of corruption to the notice of appropriate authorities and the general public. Users can also report on things that needs government intervention
 
@@ -23,5 +26,3 @@ Others like the create, details, edit, change status, and view all are then acce
 ## Next Steps
 The next thing would be to design the code to enable sigin and signup process.
 I have made it in a way that the js framework shall be used for form validation/authentication and loading of data.
-
-[![Build Status](https://travis-ci.com/Paphra/iReporter.svg?branch=develop)](https://travis-ci.com/Paphra/iReporter)
