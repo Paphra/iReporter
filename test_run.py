@@ -81,6 +81,96 @@ class RunTestCase(ut.TestCase):
         self.successful_create4 = {"data":[{"id":23239,"message":"Created a red-flag record"}],"status":201}
         self.successful_create5 = {"data": [{"id": 23230, "message": "Created a red-flag record"}], "status": 201}
         
+        self.new_user1 = {
+            "id": 3324332234,
+            "username": "Paphra",
+            "isAdmin": False,
+            "email": "paphra.me@gmail.com",
+            "phoneNumber": "0701822382",
+            "firstname": "Epaphradito",
+            "lastname": "Lugayavu",
+            "othernames": "Permutit",
+            "password": "123456789",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Male",
+            "occupation": "Software Developer",
+            "address": "Nalugala, Wakiso, Uganda"
+        }
+        self.new_user1_repeat_email = {
+            "id": 3209932214,
+            "username": "Xypindo",
+            "isAdmin": False,
+            "email": "paphra.me@gmail.com",
+            "phoneNumber": "0700928392",
+            "firstname": "Martha",
+            "lastname": "Nakalyango",
+            "othernames": "",
+            "password": "923456789",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Female",
+            "occupation": "Security Guard",
+            "address": "Gaba, Kampala, Uganda"
+        }
+        self.new_user1_repeat_username = {
+            "id": 7209932218,
+            "username": "Paphra",
+            "isAdmin": False,
+            "email": "xyz1990@gmail.com",
+            "phoneNumber": "0778289201",
+            "firstname": "Bemerdine",
+            "lastname": "Birengeso",
+            "othernames": "Bire",
+            "password": "623456789",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Male",
+            "occupation": "Teacher",
+            "address": "Kisubi, Wakiso, Uganda"
+        }
+        self.new_user2 = {
+            "id": 2324331223,
+            "username": "Jules",
+            "isAdmin": False,
+            "email": "julius234@gmail.com",
+            "phoneNumber": "0793424212",
+            "firstname": "Julius",
+            "lastname": "Katamba",
+            "othernames": "",
+            "password": "223456789",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Male",
+            "occupation": "Farmer",
+            "address": "Lwatu, Nakasongola, Uganda"
+        }
+        self.new_user3 = {
+            "id": 2324332234,
+            "username": "RechealK",
+            "isAdmin": False,
+            "email": "rechealk2018@gmail.com",
+            "phoneNumber": "075900123",
+            "firstname": "Recheal",
+            "lastname": "Atuhaire",
+            "othernames": "Kunihira",
+            "password": "323456789",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Female",
+            "occupation": "Business Woman - Salon operator",
+            "address": "Lubaga, Kampala, Uganda"
+        }
+        self.new_user_admin = {
+            "id": 2322904328,
+            "username": "Government",
+            "isAdmin": True,
+            "email": "info.security@mia.go.ug",
+            "phoneNumber": "07777522214",
+            "firstname": "Adolf",
+            "lastname": "Mwesigye",
+            "othernames": "",
+            "password": "987654321",
+            "registered": datetime.date.today().isoformat(),
+            "gender": "Male",
+            "occupation": "Minister for defence",
+            "address": "Entebbe, Wakiso, Uganda"
+        }
 
     def tearDown(self):
         pass
@@ -120,6 +210,57 @@ class RunTestCase(ut.TestCase):
 
             assert Response.get_json(rv2) == {"error":"json object error","status":400}
 
+    def test_add_new_user_call(self):
+        with app.test_client() as au:
+            au.post("/api/v1/users")
+            assert request.method == 'POST'
+            assert request.path == "/api/v1/users"
+            assert request.get_json() == None
+            
+    def test_add_user_with_json_object(self):
+        with app.test_client() as au:
+            rv = au.post("/api/v1/users", json=self.new_user1)
+            rv2 = au.post("/api/v1/users", json=self.new_user2)
+            rv3 = au.post("/api/v1/users", json=self.new_user3)
+            rv4 = au.post("/api/v1/users", json=self.new_user_admin)
+
+            assert Response.get_json(rv) == {
+                "data": [{"id": self.new_user1['id'], "message": "New User Added!"}], "status":201
+            }
+            assert Response.get_json(rv2) == {
+                "data": [{"id": self.new_user2['id'], "message": "New User Added!"}], "status":201
+            }
+            assert Response.get_json(rv3) == {
+                "data": [{"id": self.new_user3['id'], "message": "New User Added!"}], "status":201
+            }
+            assert Response.get_json(rv4) == {
+                "data": [{"id": self.new_user_admin['id'], "message": "New Admin Added!"}], "status": 201
+            }
+
+    def test_add_user_no_json(self):
+        with app.test_client() as c:
+            rv = c.post("/api/v1/users")
+            assert Response.get_json(rv) == {"error": "json object error", "status": 400}
+
+    
+    def test_add_users_repeat(self):
+        with app.test_client() as au:
+            rv = au.post("/api/v1/users", json=self.new_user1_repeat_email)
+            assert Response.get_json(rv) == {
+                "data": [{'id': self.new_user1_repeat_email['id'], 'message': "User Already Exists"}],
+                "status": 200
+            }
+            rv2 = au.post("/api/v1/users", json=self.new_user1_repeat_username)
+            assert Response.get_json(rv2) == {
+                "data": [{'id': self.new_user1_repeat_username['id'], 'message': "User Already Exists"}],
+                "status": 200
+            }
+            rv3 = au.post("/api/v1/users", json=self.new_user1) #repeating all values
+            assert Response.get_json(rv3) == {
+                "data": [{'id': self.new_user1['id'], 'message': "User Already Exists"}],
+                "status": 200
+            }
+            
     def test_get_all_red_flags_call(self):
         with app.test_client() as c:
             rv = c.get("/api/v1/red-flags")
