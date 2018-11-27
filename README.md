@@ -1,9 +1,6 @@
 [![Build Status](https://travis-ci.com/Paphra/iReporter.svg?branch=develop)](https://travis-ci.com/Paphra/iReporter)
-
 [![Coverage Status](https://coveralls.io/repos/github/Paphra/iReporter/badge.svg?branch=develop)](https://coveralls.io/github/Paphra/iReporter?branch=develop)
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/98b3fa2007fd1192b882/maintainability)](https://codeclimate.com/github/Paphra/iReporter/maintainability)
-
 [![Test Coverage](https://api.codeclimate.com/v1/badges/98b3fa2007fd1192b882/test_coverage)](https://codeclimate.com/github/Paphra/iReporter/test_coverage)
 
 # iRporter
