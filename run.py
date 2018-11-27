@@ -59,68 +59,7 @@ def add_new_flag(data):
 
 all_flags = []
 
-all_users = [
-    {
-        "id": 3324332234,
-        "username": "Paphra",
-        "isAdmin": False,
-        "email": "paphra.me@gmail.com",
-        "phoneNumber": "0701822382",
-        "firstname": "Epaphradito",
-        "lastname": "Lugayavu",
-        "othernames": "Permutit",
-        "password": "123456789",
-        "registered": datetime.date.today().isoformat(),
-        "gender": "Male",
-        "occupation": "Software Developer",
-        "address": "Nalugala, Wakiso, Uganda"
-    },
-    {
-        "id": 2324331223,
-        "username": "Jules",
-        "isAdmin": False,
-        "email": "julius234@gmail.com",
-        "phoneNumber": "0793424212",
-        "firstname": "Julius",
-        "lastname": "Katamba",
-        "othernames": "",
-        "password": "223456789",
-        "registered": datetime.date.today().isoformat(),
-        "gender": "Male",
-        "occupation": "Farmer",
-        "address": "Lwatu, Nakasongola, Uganda"
-    },
-    {
-        "id": 2324332234,
-        "username": "RechealK",
-        "isAdmin": False,
-        "email": "rechealk2018@gmail.com",
-        "phoneNumber": "075900123",
-        "firstname": "Recheal",
-        "lastname": "Atuhaire",
-        "othernames": "Kunihira",
-        "password": "323456789",
-        "registered": datetime.date.today().isoformat(),
-        "gender": "Female",
-        "occupation": "Business Woman - Salon operator",
-        "address": "Lubaga, Kampala, Uganda"
-    },
-    {
-        "id": 2322904328,
-        "username": "Government",
-        "isAdmin": True,
-        "email": "info.security@mia.go.ug",
-        "phoneNumber": "07777522214",
-        "firstname": "Adolf",
-        "lastname": "Mwesigye",
-        "othernames": "",
-        "password": "987654321",
-        "registered": datetime.date.today().isoformat(),
-        "gender": "Male",
-        "occupation": "Minister for defence",
-        "address": "Entebbe, Wakiso, Uganda"
-    }
-]
+all_users = []
 
 @app.route("/api/v1/red-flags", methods=["GET"])
 def get_all_flags():
@@ -160,6 +99,60 @@ def user_is_admin(user_id):
             if user["isAdmin"]:
                 return True
     return False
+
+@app.route("/api/v1/users", methods=["POST"])
+def add_new_user():
+    try:
+        json_data = request.get_json()
+        uname = json_data['username']
+        email = json_data['email']
+
+        if user_exists(uname, email):
+            res = {
+                "status": 200,
+                "data": [{
+                    "id": json_data["id"],
+                    "message": "User Already Exists"
+                }]
+            }
+            return (jsonify(res), 200)
+        
+        add_user(json_data)
+
+        msg = "New User Added!"
+        if json_data["isAdmin"]:
+            msg = "New Admin Added!"
+        res = {
+            "status": 201,
+            "data": [{
+                "id": json_data['id'],
+                "message": msg
+            }]
+        }
+
+        return (jsonify(res), 201)
+    except:
+        res = {
+            "status": 400,
+            "error": "json object error"
+        }
+
+        return (jsonify(res), 400)
+
+def user_exists(username, email):
+    if len(all_users) == 0:
+        return False
+
+    for user in all_users:
+        if user['username'] == username:
+            return True
+        elif user['email'] == email:
+            return True
+    
+    return False
+
+def add_user(json_data):
+    all_users.append(json_data)
 
 if __name__ == '__main__':
     app.run()
