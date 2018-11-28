@@ -2,13 +2,6 @@ language: python
 python:
   - "2.7"
   - "3.4"
-env:
-  global:
-    - CC_TEST_REPORTER_ID=cd05fbdf9df84f150e822808f8055fba53a0dc816568e0436a4267de40430775
-    
-matrix:
-    - USE_NETWORK=true
-    - USE_NETWORK=false
     
 branches:
   only:
@@ -21,16 +14,9 @@ install:
   - pip install -r requirements.txt
   - pip install python-coveralls
 
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
 script:
   - pytest
   - bundle exec rspec
-   
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
   - coveralls
