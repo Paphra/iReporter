@@ -275,8 +275,8 @@ def edit_location(new_loc, flag_id):
 def edit_red_flag_comment(red_flag_id):
     try:
         j_data = request.get_json()
-        new_loc = j_data["comment"]
-        if edit_location(new_loc, red_flag_id):
+        new_comm = j_data["comment"]
+        if edit_location(new_comm, red_flag_id):
             res = {
                 "data": [{
                     "id": int(red_flag_id),
@@ -302,6 +302,42 @@ def edit_comment(new_comm, flag_id):
     for flag in all_flags:
         if flag["id"] == int(flag_id):
             flag['comment'] = new_comm
+            return True
+
+    return False
+
+
+@app.route("/api/v1/red-flags/<red_flag_id>/title", methods=["PATCH"])
+def edit_red_flag_title(red_flag_id):
+    try:
+        j_data = request.get_json()
+        new_title = j_data["title"]
+        if edit_location(new_title, red_flag_id):
+            res = {
+                "data": [{
+                    "id": int(red_flag_id),
+                    "message": "Updated red-flag record's title"
+                }],
+                "status": 200
+            }
+            return (jsonify(res), 200)
+        res = {
+            "error": "No red flag found",
+            "status": 404
+        }
+        return (jsonify(res), 404)
+    except:
+        res = {
+            "error": "json object error",
+            "status": 400
+        }
+        return (jsonify(res), 400)
+
+
+def edit_title(new_title, flag_id):
+    for flag in all_flags:
+        if flag["id"] == int(flag_id):
+            flag['title'] = new_title
             return True
 
     return False
