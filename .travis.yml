@@ -2,10 +2,9 @@ language: python
 python:
   - "2.7"
   - "3.4"
-  - "3.5"
 env:
   global:
-    - CC_TEST_REPORTER_ID=ABC123
+    - CC_TEST_REPORTER_ID=cd05fbdf9df84f150e822808f8055fba53a0dc816568e0436a4267de40430775
     
 branches:
   only:
@@ -24,7 +23,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - py.test
+  - pytest
   - coverage run test_run.py
   - bundle exec rspec
    
