@@ -234,6 +234,10 @@ class RunTestCase(ut.TestCase):
         self.test_new_location2 = "83.1232 44.0938"
         self.test_new_location3 = "32.1232 10.0938"
 
+        self.test_new_comment1 = "There is a snake in the garden"
+        self.test_new_comment2 = "We have many flogs at our village!!"
+        self.test_new_comment3 = "The government fund was eaten"
+
     def tearDown(self):
         pass
 
@@ -543,7 +547,55 @@ class RunTestCase(ut.TestCase):
                 "error": "No red flag found",
                 "status": 404
             }
-            
+
+    def test_red_flag_change_comment(self):
+        with app.test_client() as c:
+            rv1 = c.patch(
+                "/api/v1/red-flags/{}/comment".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"comment": self.test_new_comment1})
+            rv2 = c.patch(
+                "/api/v1/red-flags/{}/comment".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"comment": self.test_new_comment2})
+            rv3 = c.patch(
+                "/api/v1/red-flags/{}/comment".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"comment": self.test_new_comment3})
+
+            assert Response.get_json(rv1) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's comment"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's comment"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv3) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's comment"
+                }],
+                "status": 200
+            }
+            rv = c.patch(
+                "/api/v1/red-flags/{}/comment".format(
+                    self.test_flag_id5_does_not_exist
+                ),
+                json={"comment": self.test_new_comment3})
+            assert Response.get_json(rv) == {
+                "error": "No red flag found",
+                "status": 404
+            }
 
 if __name__ == '__main__':
     ut.main()
