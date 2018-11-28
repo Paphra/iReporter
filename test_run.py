@@ -242,6 +242,10 @@ class RunTestCase(ut.TestCase):
         self.test_new_title2 = "We have many flogs at our village!!"
         self.test_new_title3 = "The government fund was eaten"
 
+        self.test_new_type1 = "Red-Flag"
+        self.test_new_type2 = "Intervention"
+        self.test_new_type3 = "Red-Flag"
+
     def tearDown(self):
         pass
 
@@ -648,7 +652,54 @@ class RunTestCase(ut.TestCase):
                 "error": "No red flag found",
                 "status": 404
             }
+    def test_red_flag_change_type(self):
+        with app.test_client() as c:
+            rv1 = c.patch(
+                "/api/v1/red-flags/{}/type".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"type": self.test_new_type1})
+            rv2 = c.patch(
+                "/api/v1/red-flags/{}/type".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"type": self.test_new_type2})
+            rv3 = c.patch(
+                "/api/v1/red-flags/{}/type".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"type": self.test_new_type3})
 
+            assert Response.get_json(rv1) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's type"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's type"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv3) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's type"
+                }],
+                "status": 200
+            }
+            rv = c.patch(
+                "/api/v1/red-flags/{}/type".format(
+                    self.test_flag_id5_does_not_exist
+                ),
+                json={"type": self.test_new_type3})
+            assert Response.get_json(rv) == {
+                "error": "No red flag found",
+                "status": 404
+            }
 
 if __name__ == '__main__':
     ut.main()
