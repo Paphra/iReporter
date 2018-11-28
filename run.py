@@ -379,5 +379,41 @@ def edit_type(new_type, flag_id):
     return False
 
 
+@app.route("/api/v1/red-flags/<red_flag_id>/status", methods=["PATCH"])
+def edit_red_flag_status(red_flag_id):
+    try:
+        j_data = request.get_json()
+        new_status = j_data["status"]
+        if edit_location(new_status, red_flag_id):
+            res = {
+                "data": [{
+                    "id": int(red_flag_id),
+                    "message": "Updated red-flag record's status"
+                }],
+                "status": 200
+            }
+            return (jsonify(res), 200)
+        res = {
+            "error": "No red flag found",
+            "status": 404
+        }
+        return (jsonify(res), 404)
+    except:
+        res = {
+            "error": "json object error",
+            "status": 400
+        }
+        return (jsonify(res), 400)
+
+
+def edit_type(new_status, flag_id):
+    for flag in all_flags:
+        if flag["id"] == int(flag_id):
+            flag['status'] = new_status
+            return True
+            
+    return False
+
+
 if __name__ == '__main__':
     app.run()
