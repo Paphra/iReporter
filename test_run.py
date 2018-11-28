@@ -75,11 +75,41 @@ class RunTestCase(ut.TestCase):
             "otherFiles": ["file1","file2"]
         }
 
-        self.successful_create = {"data":[{"id":23219,"message":"Created red-flag record"}],"status":201}
-        self.successful_create2 = {"data":[{"id":23210,"message":"Created red-flag record"}],"status":201}
-        self.successful_create3 = {"data":[{"id":23212,"message":"Created red-flag record"}],"status":201}
-        self.successful_create4 = {"data":[{"id":23239,"message":"Created red-flag record"}],"status":201}
-        self.successful_create5 = {"data": [{"id": 23230, "message": "Created red-flag record"}], "status": 201}
+        self.successful_create = {
+            "data": [{
+                "id": 23219,
+                "message": "Created red-flag record"
+            }],
+            "status": 201
+        }
+        self.successful_create2 = {
+            "data": [{
+                "id": 23210,
+                "message": "Created red-flag record"
+            }],
+            "status": 201
+        }
+        self.successful_create3 = {
+            "data": [{
+                "id": 23212,
+                "message": "Created red-flag record"
+            }],
+            "status": 201
+        }
+        self.successful_create4 = {
+            "data": [{
+                "id": 23239,
+                "message": "Created red-flag record"
+            }],
+            "status": 201
+        }
+        self.successful_create5 = {
+            "data": [{
+                "id": 23230,
+                "message":"Created red-flag record"
+            }],
+            "status": 201
+        }
         
         self.new_user1 = {
             "id": 3324332234,
@@ -172,11 +202,26 @@ class RunTestCase(ut.TestCase):
             "address": "Entebbe, Wakiso, Uganda"
         }
 
-        self.test_user_name_exists = {"username":'Paphra', "email":"ppaapp@gmail.com"}
-        self.test_user_name_does_not_exist ={"username":"Lamwaka", "email":"lamwa@yahoo.com"}
-        self.test_email_exists = {"email":'paphra.me@gmail.com', "username":"Paparo"}
-        self.test_email_does_not_exist = {"email": "marian256@yahoo.com", "username": "Mariana"}
-        self.test_all_user_info_exists = {"username":'Paphra', "email":"paphra@gmail.com"}
+        self.test_user_name_exists = {
+            "username": 'Paphra',
+            "email": "ppaapp@gmail.com"
+        }
+        self.test_user_name_does_not_exist = {
+            "username": "Lamwaka",
+            "email": "lamwa@yahoo.com"
+        }
+        self.test_email_exists = {
+            "email": 'paphra.me@gmail.com',
+            "username": "Paparo"
+        }
+        self.test_email_does_not_exist = {
+            "email": "marian256@yahoo.com",
+            "username": "Mariana"
+        }
+        self.test_all_user_info_exists = {
+            "username": 'Paphra',
+            "email": "paphra@gmail.com"
+        }
         
 
         self.test_get_red_flag_id_data = 23219
@@ -191,11 +236,26 @@ class RunTestCase(ut.TestCase):
     def test_create_red_flag_record_data(self):
         with app.test_client() as c:
             
-            rv = c.post("/api/v1/red-flags", json=self.test_new_flag_record_data)
-            rv2 = c.post("/api/v1/red-flags", json=self.test_get_flag_records_inter)
-            rv3 = c.post("/api/v1/red-flags", json=self.test_get_flag_records_under_inv)
-            rv4 = c.post("/api/v1/red-flags", json=self.test_get_flag_records_not_for_user)
-            rv5 = c.post("/api/v1/red-flags", json=self.test_get_flag_records_resolved_not_for_user)
+            rv = c.post(
+                "/api/v1/red-flags",
+                json=self.test_new_flag_record_data
+            )
+            rv2 = c.post(
+                "/api/v1/red-flags",
+                json=self.test_get_flag_records_inter
+            )
+            rv3 = c.post(
+                "/api/v1/red-flags",
+                json=self.test_get_flag_records_under_inv
+            )
+            rv4 = c.post(
+                "/api/v1/red-flags",
+                json=self.test_get_flag_records_not_for_user
+            )
+            rv5 = c.post(
+                "/api/v1/red-flags",
+                json=self.test_get_flag_records_resolved_not_for_user
+            )
 
             assert Response.get_json(rv) == self.successful_create
             assert Response.get_json(rv2) == self.successful_create2
@@ -206,7 +266,10 @@ class RunTestCase(ut.TestCase):
     # test repeated data
     def test_create_red_flag_record_data_repeat(self):
         with app.test_client() as d:
-            rv2 = d.post("/api/v1/red-flags", json=self.test_new_flag_record_data)
+            rv2 = d.post(
+                "/api/v1/red-flags",
+                json=self.test_new_flag_record_data
+            )
 
             assert Response.get_json(rv2) == {
                 "data": [{
@@ -219,7 +282,10 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as d:
             rv2 = d.post("/api/v1/red-flags", json=None)
 
-            assert Response.get_json(rv2) == {"error":"json object error","status":400}
+            assert Response.get_json(rv2) == {
+                "error": "json object error",
+                "status": 400
+            }
             
     def test_add_user_with_json_object(self):
         with app.test_client() as au:
@@ -268,7 +334,10 @@ class RunTestCase(ut.TestCase):
     
     def test_add_users_repeat(self):
         with app.test_client() as au:
-            rv = au.post("/api/v1/users", json=self.new_user1_repeat_email)
+            rv = au.post(
+                "/api/v1/users",
+                json=self.new_user1_repeat_email
+            )
             assert Response.get_json(rv) == {
                 "data": [{
                     'id': self.new_user1_repeat_email['id'],
@@ -286,7 +355,10 @@ class RunTestCase(ut.TestCase):
             }
             rv3 = au.post("/api/v1/users", json=self.new_user1) #repeating all values
             assert Response.get_json(rv3) == {
-                "data": [{'id': self.new_user1['id'], 'message': "User Already Exists"}],
+                "data": [{
+                    'id': self.new_user1['id'],
+                    'message': "User Already Exists"
+                }],
                 "status": 200
             }
             
@@ -304,19 +376,27 @@ class RunTestCase(ut.TestCase):
             
     def test_get_all_red_flags_admin(self):
         with app.test_client() as c:
-            rv0 = c.get("/api/v1/red-flags", json={"userId": 2322904328})  # passed the admin id
+            rv0 = c.get("/api/v1/red-flags", json={
+                "userId": 2322904328
+            })  # passed the admin id
             assert len(Response.get_json(rv0)['data']) == 5
             
 
     def test_get_all_red_flags_no_json(self):
         with app.test_client() as c:
             rv = c.get("/api/v1/red-flags")
-            assert Response.get_json(rv) == {"error": "json object error", "status": 400}
+            assert Response.get_json(rv) == {
+                "error": "json object error",
+                "status": 400
+            }
 
     def test_get_user_given_username(self):
         with app.test_client() as cc:
             rv = cc.get("/api/v1/users", json=self.test_user_name_exists)
-            rv2 = cc.get("/api/v1/users", json=self.test_user_name_does_not_exist)
+            rv2 = cc.get(
+                "/api/v1/users",
+                json=self.test_user_name_does_not_exist
+            )
 
             assert Response.get_json(rv) == {
                 "data": [self.new_user1],
@@ -349,23 +429,49 @@ class RunTestCase(ut.TestCase):
 
     def test_get_specific_red_flag_given_id(self):
         with app.test_client() as t:
-            rv = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
-            rv2 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_inter)))
-            rv3 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_under_inv)))
-            rv4 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_not_for_user)))
-            rv5 = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id5_does_not_exist)))
+            rv = t.get(
+                "/api/v1/red-flags/{}".format(
+                    str(self.test_get_red_flag_id_data)
+                )
+            )
+            rv2 = t.get("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id_inter)
+                ))
+            rv3 = t.get("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id_under_inv)
+                ))
+            rv4 = t.get("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id_not_for_user)
+                ))
+            rv5 = t.get("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id5_does_not_exist)
+                ))
 
-            assert Response.get_json(rv)["data"] == [self.test_new_flag_record_data]
-            assert Response.get_json(rv2)["data"] == [self.test_get_flag_records_inter]
-            assert Response.get_json(rv3)["data"] == [self.test_get_flag_records_under_inv]
-            assert Response.get_json(rv4)["data"] == [self.test_get_flag_records_not_for_user]
+            assert Response.get_json(rv)["data"] == [
+                self.test_new_flag_record_data
+            ]
+            assert Response.get_json(rv2)["data"] == [
+                self.test_get_flag_records_inter
+            ]
+            assert Response.get_json(rv3)["data"] == [
+                self.test_get_flag_records_under_inv
+            ]
+            assert Response.get_json(rv4)["data"] == [
+                self.test_get_flag_records_not_for_user
+            ]
             assert Response.get_json(rv5)["data"] == []           
     
     def test_red_flag_deletion(self):
         with app.test_client() as t:
-            rv = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
-            rv2 = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_inter)))
-            rv5 = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id5_does_not_exist)))
+            rv = t.delete("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id_data)
+                ))
+            rv2 = t.delete("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id_inter)
+                ))
+            rv5 = t.delete("/api/v1/red-flags/{}".format(
+                str(self.test_get_red_flag_id5_does_not_exist)
+                ))
 
             assert Response.get_json(rv) == {
                 "data": [{

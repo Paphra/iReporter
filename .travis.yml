@@ -1,28 +1,14 @@
 language: python
-
 python:
+  - "2.6"
   - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-
-branches:
-  only:
-    - develop
-
 install:
-  - pip install codeclimate-test-reporter
-  - pip install -r requirements.txt
-  - pip install tox-travis
+  - pip install -e . --use-mirrors
+before_script:
+  - pip install -r requirements.txt --use-mirrors
+  - py.test test_run.py --cov=/
 
 script:
-  - tox
-  - coverage run --source icon_font_to_png -m py.test
-  - coverage report -m
-  - CODECLIMATE_REPO_TOKEN=cd05fbdf9df84f150e822808f8055fba53a0dc816568e0436a4267de40430775 codeclimate-test-reporter
-  - codeclimate-test-reporter --token cd05fbdf9df84f150e822808f8055fba53a0dc816568e0436a4267de40430775
-  - codeclimate-test-reporter
-  - py.test --cov=run.py tests/
-  - codeclimate-test-reporter --file ./me/.coverage
+  - py.test test_run.py --pep8 / -v --cov / --cov-report term-missing
 after_success:
   - coveralls

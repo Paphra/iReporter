@@ -1,0 +1,10 @@
+language: 
+  - python
+install:
+  - pip install pytest-cov
+  - pip install python-coveralls
+script:
+  - py.test --cov=/ /
+
+after_success:
+  - coveralls
