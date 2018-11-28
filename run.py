@@ -210,5 +210,32 @@ def get_flag(flag_id):
     
     return None
 
+@app.route("/api/v1/red-flags/<red_flag_id>", methods=["DELETE"])
+def delete_red_flag(red_flag_id):
+    if delete_flag(red_flag_id):
+        res = {
+            "status": 200,
+            "data": [{
+                "id": int(red_flag_id),
+                "message": "red-flag has been deleted"
+            }]
+        }
+        return (jsonify(res), 200)
+    else:
+        res = {
+            "status": 404,
+            "error": "the flag doesn't exist"
+        }
+        return (jsonify(res), 404)
+
+def delete_flag(flag_id):
+    for flag in all_flags:
+        if flag['id'] == int(flag_id):
+            all_flags.remove(flag)
+            return True
+    
+    return False
+
+
 if __name__ == '__main__':
     app.run()
