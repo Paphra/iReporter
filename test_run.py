@@ -20,7 +20,7 @@ class RunTestCase(ut.TestCase):
             "Videos": ["video1", "video2"],
             "otherFiles": ["file1","file2"]
         }
-        self.test_get_flag_records_inter = {
+        self.test_flag_records_inter = {
             "id": 23210,
             "title": "Roads are not okay",
             "comment": "The bridge from kitaga to nyamitobola is down",
@@ -34,7 +34,7 @@ class RunTestCase(ut.TestCase):
             "otherFiles": ["file1","file2"]
         }
 
-        self.test_get_flag_records_under_inv = {
+        self.test_flag_records_under_inv = {
             "id": 23212,
             "title": "Thief or the SACCO money",
             "comment": "There is someone stealing our sacco money",
@@ -47,7 +47,7 @@ class RunTestCase(ut.TestCase):
             "Videos": ["video1", "video2"],
             "otherFiles": ["file1","file2"]
         }
-        self.test_get_flag_records_not_for_user = {
+        self.test_flag_records_not_for_user = {
             "id": 23239,
             "title": "Our Village is under siege",
             "comment": "We have corrupt official on ground",
@@ -61,7 +61,7 @@ class RunTestCase(ut.TestCase):
             "otherFiles": ["file1","file2"]
         }
 
-        self.test_get_flag_records_resolved_not_for_user = {
+        self.test_flag_records_resolved_not_for_user = {
             "id": 23230,
             "title": "The crops are dying off",
             "comment": "We need some water for irrigations",
@@ -224,11 +224,15 @@ class RunTestCase(ut.TestCase):
         }
         
 
-        self.test_get_red_flag_id_data = 23219
-        self.test_get_red_flag_id_inter = 23210
-        self.test_get_red_flag_id_under_inv = 23212
-        self.test_get_red_flag_id_not_for_user = 23239
-        self.test_get_red_flag_id5_does_not_exist = 23244
+        self.test_flag_id_data = 23219
+        self.test_flag_id_inter = 23210
+        self.test_flag_id_under_inv = 23212
+        self.test_flag_id_not_for_user = 23239
+        self.test_flag_id5_does_not_exist = 23244
+
+        self.test_new_location1 = "23.1232 100.0938"
+        self.test_new_location2 = "83.1232 44.0938"
+        self.test_new_location3 = "32.1232 10.0938"
 
     def tearDown(self):
         pass
@@ -242,19 +246,19 @@ class RunTestCase(ut.TestCase):
             )
             rv2 = c.post(
                 "/api/v1/red-flags",
-                json=self.test_get_flag_records_inter
+                json=self.test_flag_records_inter
             )
             rv3 = c.post(
                 "/api/v1/red-flags",
-                json=self.test_get_flag_records_under_inv
+                json=self.test_flag_records_under_inv
             )
             rv4 = c.post(
                 "/api/v1/red-flags",
-                json=self.test_get_flag_records_not_for_user
+                json=self.test_flag_records_not_for_user
             )
             rv5 = c.post(
                 "/api/v1/red-flags",
-                json=self.test_get_flag_records_resolved_not_for_user
+                json=self.test_flag_records_resolved_not_for_user
             )
 
             assert Response.get_json(rv) == self.successful_create
@@ -431,58 +435,58 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as t:
             rv = t.get(
                 "/api/v1/red-flags/{}".format(
-                    str(self.test_get_red_flag_id_data)
+                    str(self.test_flag_id_data)
                 )
             )
             rv2 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id_inter)
+                str(self.test_flag_id_inter)
                 ))
             rv3 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id_under_inv)
+                str(self.test_flag_id_under_inv)
                 ))
             rv4 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id_not_for_user)
+                str(self.test_flag_id_not_for_user)
                 ))
             rv5 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id5_does_not_exist)
+                str(self.test_flag_id5_does_not_exist)
                 ))
 
             assert Response.get_json(rv)["data"] == [
                 self.test_new_flag_record_data
             ]
             assert Response.get_json(rv2)["data"] == [
-                self.test_get_flag_records_inter
+                self.test_flag_records_inter
             ]
             assert Response.get_json(rv3)["data"] == [
-                self.test_get_flag_records_under_inv
+                self.test_flag_records_under_inv
             ]
             assert Response.get_json(rv4)["data"] == [
-                self.test_get_flag_records_not_for_user
+                self.test_flag_records_not_for_user
             ]
             assert Response.get_json(rv5)["data"] == []           
     
     def test_red_flag_deletion(self):
         with app.test_client() as t:
             rv = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id_data)
+                str(self.test_flag_id_data)
                 ))
             rv2 = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id_inter)
+                str(self.test_flag_id_inter)
                 ))
             rv5 = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_get_red_flag_id5_does_not_exist)
+                str(self.test_flag_id5_does_not_exist)
                 ))
 
             assert Response.get_json(rv) == {
                 "data": [{
-                    "id": self.test_get_red_flag_id_data,
+                    "id": self.test_flag_id_data,
                     "message": "red-flag has been deleted"
                 }],
                 "status": 200
             }
             assert Response.get_json(rv2) == {
                 "data": [{
-                    "id": self.test_get_red_flag_id_inter,
+                    "id": self.test_flag_id_inter,
                     "message": "red-flag has been deleted"
                 }],
                 "status": 200
@@ -491,7 +495,55 @@ class RunTestCase(ut.TestCase):
                 "error": "the flag doesn't exist",
                 "status": 404
             }
+    def test_red_flag_change_location(self):
+        with app.test_client() as c:
+            rv1 = c.patch(
+                "/api/v1/red-flags/{}/location".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"location": self.test_new_location1})
+            rv2 = c.patch(
+                "/api/v1/red-flags/{}/location".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"location": self.test_new_location2})
+            rv3 = c.patch(
+                "/api/v1/red-flags/{}/location".format(
+                    self.test_flag_id_not_for_user
+                ),
+                json={"location": self.test_new_location3})
 
+            assert Response.get_json(rv1) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's location"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's location"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv3) == {
+                "data": [{
+                    "id": self.test_flag_id_not_for_user,
+                    "message": "Updated red-flag record's location"
+                }],
+                "status":200
+            }
+            rv = c.patch(
+                "/api/v1/red-flags/{}/location".format(
+                    self.test_flag_id5_does_not_exist
+                ),
+                json={"location": self.test_new_location3})
+            assert Response.get_json(rv) == {
+                "error": "No red flag found",
+                "status": 404
+            }
+            
 
 if __name__ == '__main__':
     ut.main()

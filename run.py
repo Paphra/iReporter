@@ -236,6 +236,40 @@ def delete_flag(flag_id):
     
     return False
 
+@app.route("/api/v1/red-flags/<red_flag_id>/location", methods=["PATCH"])
+def edit_red_flag_location(red_flag_id):
+    try:
+        j_data = request.get_json()
+        new_loc = j_data["location"]
+        if edit_location(new_loc, red_flag_id):
+            res = {
+                "data": [{
+                    "id": int(red_flag_id),
+                    "message": "Updated red-flag record's location"
+                }],
+                "status":200
+            }
+            return (jsonify(res), 200)
+        res = {
+            "error": "No red flag found",
+            "status":404
+        }
+        return (jsonify(res), 404)
+    except:
+        res = {
+            "error": "json object error",
+            "status": 400
+        }
+        return (jsonify(res), 400)
+        
+def edit_location(new_loc, flag_id):
+    for flag in all_flags:
+        if flag["id"] == int(flag_id):
+            flag['loaction'] = new_loc
+            return True
+    
+    return False
+
 
 if __name__ == '__main__':
     app.run()
