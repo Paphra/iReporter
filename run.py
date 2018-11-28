@@ -271,5 +271,41 @@ def edit_location(new_loc, flag_id):
     return False
 
 
+@app.route("/api/v1/red-flags/<red_flag_id>/comment", methods=["PATCH"])
+def edit_red_flag_comment(red_flag_id):
+    try:
+        j_data = request.get_json()
+        new_loc = j_data["comment"]
+        if edit_location(new_loc, red_flag_id):
+            res = {
+                "data": [{
+                    "id": int(red_flag_id),
+                    "message": "Updated red-flag record's comment"
+                }],
+                "status": 200
+            }
+            return (jsonify(res), 200)
+        res = {
+            "error": "No red flag found",
+            "status": 404
+        }
+        return (jsonify(res), 404)
+    except:
+        res = {
+            "error": "json object error",
+            "status": 400
+        }
+        return (jsonify(res), 400)
+
+
+def edit_comment(new_comm, flag_id):
+    for flag in all_flags:
+        if flag["id"] == int(flag_id):
+            flag['comment'] = new_comm
+            return True
+
+    return False
+
+
 if __name__ == '__main__':
     app.run()
