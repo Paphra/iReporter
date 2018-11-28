@@ -3,7 +3,10 @@ python:
   - "2.7"
   - "3.4"
   - "3.5"
-
+env:
+  global:
+    - CC_TEST_REPORTER_ID=ABC123
+    
 branches:
   only:
     - api
@@ -16,10 +19,19 @@ install:
   - pip install python-coveralls
   - pip install coverage
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
   - py.test
   - coverage run test_run.py
+  - bundle exec rspec
+   
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
   - coverage report
   - coveralls
+ # single test suite, non-parallel build.
