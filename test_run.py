@@ -157,36 +157,7 @@ class RunTestCase(ut.TestCase):
             "occupation": "Teacher",
             "address": "Kisubi, Wakiso, Uganda"
         }
-        self.new_user2 = {
-            "id": 2324331223,
-            "username": "Jules",
-            "isAdmin": False,
-            "email": "julius234@gmail.com",
-            "phoneNumber": "0793424212",
-            "firstname": "Julius",
-            "lastname": "Katamba",
-            "othernames": "",
-            "password": "223456789",
-            "registered": datetime.date.today().isoformat(),
-            "gender": "Male",
-            "occupation": "Farmer",
-            "address": "Lwatu, Nakasongola, Uganda"
-        }
-        self.new_user3 = {
-            "id": 2324332234,
-            "username": "RechealK",
-            "isAdmin": False,
-            "email": "rechealk2018@gmail.com",
-            "phoneNumber": "075900123",
-            "firstname": "Recheal",
-            "lastname": "Atuhaire",
-            "othernames": "Kunihira",
-            "password": "323456789",
-            "registered": datetime.date.today().isoformat(),
-            "gender": "Female",
-            "occupation": "Business Woman - Salon operator",
-            "address": "Lubaga, Kampala, Uganda"
-        }
+        
         self.new_user_admin = {
             "id": 2322904328,
             "username": "Government",
@@ -225,26 +196,17 @@ class RunTestCase(ut.TestCase):
         }
 
         self.test_flag_id_data = 23219
-        self.test_flag_id_inter = 23210
-        self.test_flag_id_under_inv = 23212
-        self.test_flag_id_not_for_user = 23239
         self.test_flag_id5_does_not_exist = 23244
 
         self.test_new_location1 = "23.1232 100.0938"
-        self.test_new_location2 = "83.1232 44.0938"
-        self.test_new_location3 = "32.1232 10.0938"
 
         self.test_new_comment1 = "There is a snake in the garden"
-        self.test_new_comment2 = "We have many flogs at our village!!"
-        self.test_new_comment3 = "The government fund was eaten"
 
         self.test_new_title1 = "There is a snake in the garden"
-        self.test_new_title2 = "We have many flogs at our village!!"
-        self.test_new_title3 = "The government fund was eaten"
 
         self.test_new_type1 = "Red-Flag"
-        self.test_new_type2 = "Intervention"
-        self.test_new_type3 = "Red-Flag"
+
+        self.test_new_status1 = "Resolved"
 
     def tearDown(self):
         pass
@@ -306,8 +268,6 @@ class RunTestCase(ut.TestCase):
     def test_add_user_with_json_object(self):
         with app.test_client() as au:
             rv = au.post("/api/v1/users", json=self.new_user1)
-            rv2 = au.post("/api/v1/users", json=self.new_user2)
-            rv3 = au.post("/api/v1/users", json=self.new_user3)
             rv4 = au.post("/api/v1/users", json=self.new_user_admin)
 
             assert Response.get_json(rv) == {
@@ -317,20 +277,7 @@ class RunTestCase(ut.TestCase):
                 }],
                 "status": 201
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.new_user2['id'],
-                    "message": "New User Added!"
-                }],
-                "status": 201
-            }
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    "id": self.new_user3['id'],
-                    "message": "New User Added!"
-                }],
-                "status": 201
-            }
+            
             assert Response.get_json(rv4) == {
                 "data": [{
                     "id": self.new_user_admin['id'],
@@ -448,15 +395,7 @@ class RunTestCase(ut.TestCase):
                     str(self.test_flag_id_data)
                 )
             )
-            rv2 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id_inter)
-            ))
-            rv3 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id_under_inv)
-            ))
-            rv4 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id_not_for_user)
-            ))
+
             rv5 = t.get("/api/v1/red-flags/{}".format(
                 str(self.test_flag_id5_does_not_exist)
             ))
@@ -464,15 +403,7 @@ class RunTestCase(ut.TestCase):
             assert Response.get_json(rv)["data"] == [
                 self.test_new_flag_record_data
             ]
-            assert Response.get_json(rv2)["data"] == [
-                self.test_flag_records_inter
-            ]
-            assert Response.get_json(rv3)["data"] == [
-                self.test_flag_records_under_inv
-            ]
-            assert Response.get_json(rv4)["data"] == [
-                self.test_flag_records_not_for_user
-            ]
+
             assert Response.get_json(rv5)["data"] == []
 
     def test_red_flag_deletion(self):
@@ -480,9 +411,7 @@ class RunTestCase(ut.TestCase):
             rv = t.delete("/api/v1/red-flags/{}".format(
                 str(self.test_flag_id_data)
             ))
-            rv2 = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id_inter)
-            ))
+
             rv5 = t.delete("/api/v1/red-flags/{}".format(
                 str(self.test_flag_id5_does_not_exist)
             ))
@@ -494,13 +423,7 @@ class RunTestCase(ut.TestCase):
                 }],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.test_flag_id_inter,
-                    "message": "red-flag has been deleted"
-                }],
-                "status": 200
-            }
+
             assert Response.get_json(rv5) == {
                 "error": "the flag doesn't exist",
                 "status": 404
@@ -510,46 +433,23 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as c:
             rv1 = c.patch(
                 "/api/v1/red-flags/{}/location".format(
-                    self.test_flag_id_not_for_user
+                    self.test_flag_id_data
                 ),
                 json={"location": self.test_new_location1})
-            rv2 = c.patch(
-                "/api/v1/red-flags/{}/location".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"location": self.test_new_location2})
-            rv3 = c.patch(
-                "/api/v1/red-flags/{}/location".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"location": self.test_new_location3})
 
             assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.test_flag_id_not_for_user,
+                    "id": self.test_flag_id_data,
                     "message": "Updated red-flag record's location"
                 }],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's location"
-                }],
-                "status": 200
-            }
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's location"
-                }],
-                "status": 200
-            }
+
             rv = c.patch(
                 "/api/v1/red-flags/{}/location".format(
                     self.test_flag_id5_does_not_exist
                 ),
-                json={"location": self.test_new_location3})
+                json={"location": self.test_new_location1})
             assert Response.get_json(rv) == {
                 "error": "No red flag found",
                 "status": 404
@@ -559,46 +459,23 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as c:
             rv1 = c.patch(
                 "/api/v1/red-flags/{}/comment".format(
-                    self.test_flag_id_not_for_user
+                    self.test_flag_id_data
                 ),
                 json={"comment": self.test_new_comment1})
-            rv2 = c.patch(
-                "/api/v1/red-flags/{}/comment".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"comment": self.test_new_comment2})
-            rv3 = c.patch(
-                "/api/v1/red-flags/{}/comment".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"comment": self.test_new_comment3})
 
             assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.test_flag_id_not_for_user,
+                    "id": self.test_flag_id_data,
                     "message": "Updated red-flag record's comment"
                 }],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's comment"
-                }],
-                "status": 200
-            }
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's comment"
-                }],
-                "status": 200
-            }
+
             rv = c.patch(
                 "/api/v1/red-flags/{}/comment".format(
                     self.test_flag_id5_does_not_exist
                 ),
-                json={"comment": self.test_new_comment3})
+                json={"comment": self.test_new_comment1})
             assert Response.get_json(rv) == {
                 "error": "No red flag found",
                 "status": 404
@@ -608,94 +485,76 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as c:
             rv1 = c.patch(
                 "/api/v1/red-flags/{}/title".format(
-                    self.test_flag_id_not_for_user
+                    self.test_flag_id_data
                 ),
                 json={"title": self.test_new_title1})
-            rv2 = c.patch(
-                "/api/v1/red-flags/{}/title".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"title": self.test_new_title2})
-            rv3 = c.patch(
-                "/api/v1/red-flags/{}/title".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"title": self.test_new_title3})
-
+ 
             assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.test_flag_id_not_for_user,
+                    "id": self.test_flag_id_data,
                     "message": "Updated red-flag record's title"
                 }],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's title"
-                }],
-                "status": 200
-            }
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's title"
-                }],
-                "status": 200
-            }
+ 
             rv = c.patch(
                 "/api/v1/red-flags/{}/title".format(
                     self.test_flag_id5_does_not_exist
                 ),
-                json={"title": self.test_new_title3})
+                json={"title": self.test_new_title1})
             assert Response.get_json(rv) == {
                 "error": "No red flag found",
                 "status": 404
             }
+ 
     def test_red_flag_change_type(self):
         with app.test_client() as c:
             rv1 = c.patch(
                 "/api/v1/red-flags/{}/type".format(
-                    self.test_flag_id_not_for_user
+                    self.test_flag_id_data
                 ),
                 json={"type": self.test_new_type1})
-            rv2 = c.patch(
-                "/api/v1/red-flags/{}/type".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"type": self.test_new_type2})
-            rv3 = c.patch(
-                "/api/v1/red-flags/{}/type".format(
-                    self.test_flag_id_not_for_user
-                ),
-                json={"type": self.test_new_type3})
-
+            
             assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.test_flag_id_not_for_user,
+                    "id": self.test_flag_id_data,
                     "message": "Updated red-flag record's type"
                 }],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's type"
-                }],
-                "status": 200
-            }
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    "id": self.test_flag_id_not_for_user,
-                    "message": "Updated red-flag record's type"
-                }],
-                "status": 200
-            }
+            
             rv = c.patch(
                 "/api/v1/red-flags/{}/type".format(
                     self.test_flag_id5_does_not_exist
                 ),
-                json={"type": self.test_new_type3})
+                json={"type": self.test_new_type1})
+            assert Response.get_json(rv) == {
+                "error": "No red flag found",
+                "status": 404
+            }
+
+    def test_red_flag_change_status(self):
+        with app.test_client() as c:
+            rv1 = c.patch(
+                "/api/v1/red-flags/{}/status".format(
+                    self.test_flag_id_data
+                ),
+                json={"status": self.test_new_status1})
+
+            assert Response.get_json(rv1) == {
+                "data": [{
+                    "id": self.test_flag_id_data,
+                    "message": "Updated red-flag record's status"
+                }],
+                "status": 200
+            }
+
+            rv = c.patch(
+                "/api/v1/red-flags/{}/status".format(
+                    self.test_flag_id5_does_not_exist
+                ),
+                json={"status": self.test_new_status1})
+
             assert Response.get_json(rv) == {
                 "error": "No red flag found",
                 "status": 404
