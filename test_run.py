@@ -188,13 +188,6 @@ class RunTestCase(ut.TestCase):
     def tearDown(self):
         pass
 
-    def test_create_red_flag_record_call(self):
-        with app.test_request_context("/api/v1/red-flags", method='POST'):
-
-            assert request.method == 'POST'
-            assert request.path == '/api/v1/red-flags'
-            assert request.get_json() == None
-
     def test_create_red_flag_record_data(self):
         with app.test_client() as c:
             
@@ -215,20 +208,18 @@ class RunTestCase(ut.TestCase):
         with app.test_client() as d:
             rv2 = d.post("/api/v1/red-flags", json=self.test_new_flag_record_data)
 
-            assert Response.get_json(rv2) == {"data":[{"id":23219,"message":"Flag Already reported!"}],"status":200}
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id":23219,"message":"Flag Already reported!"
+                }],
+                "status":200
+            }
 
     def test_create_red_flag_record_no_data(self):
         with app.test_client() as d:
             rv2 = d.post("/api/v1/red-flags", json=None)
 
             assert Response.get_json(rv2) == {"error":"json object error","status":400}
-
-    def test_add_new_user_call(self):
-        with app.test_client() as au:
-            au.post("/api/v1/users")
-            assert request.method == 'POST'
-            assert request.path == "/api/v1/users"
-            assert request.get_json() == None
             
     def test_add_user_with_json_object(self):
         with app.test_client() as au:
@@ -238,34 +229,59 @@ class RunTestCase(ut.TestCase):
             rv4 = au.post("/api/v1/users", json=self.new_user_admin)
 
             assert Response.get_json(rv) == {
-                "data": [{"id": self.new_user1['id'], "message": "New User Added!"}], "status":201
+                "data": [{
+                    "id": self.new_user1['id'],
+                    "message": "New User Added!"
+                }],
+                "status":201
             }
             assert Response.get_json(rv2) == {
-                "data": [{"id": self.new_user2['id'], "message": "New User Added!"}], "status":201
+                "data": [{
+                    "id": self.new_user2['id'],
+                    "message": "New User Added!"
+                }],
+                "status":201
             }
             assert Response.get_json(rv3) == {
-                "data": [{"id": self.new_user3['id'], "message": "New User Added!"}], "status":201
+                "data": [{
+                    "id": self.new_user3['id'],
+                    "message": "New User Added!"
+                }],
+                "status":201
             }
             assert Response.get_json(rv4) == {
-                "data": [{"id": self.new_user_admin['id'], "message": "New Admin Added!"}], "status": 201
+                "data": [{
+                    "id": self.new_user_admin['id'],
+                    "message": "New Admin Added!"
+                }],
+                "status": 201
             }
 
     def test_add_user_no_json(self):
         with app.test_client() as c:
             rv = c.post("/api/v1/users")
-            assert Response.get_json(rv) == {"error": "json object error", "status": 400}
+            assert Response.get_json(rv) == {
+                "error": "json object error",
+                "status": 400
+            }
 
     
     def test_add_users_repeat(self):
         with app.test_client() as au:
             rv = au.post("/api/v1/users", json=self.new_user1_repeat_email)
             assert Response.get_json(rv) == {
-                "data": [{'id': self.new_user1_repeat_email['id'], 'message': "User Already Exists"}],
+                "data": [{
+                    'id': self.new_user1_repeat_email['id'],
+                    'message': "User Already Exists"
+                }],
                 "status": 200
             }
             rv2 = au.post("/api/v1/users", json=self.new_user1_repeat_username)
             assert Response.get_json(rv2) == {
-                "data": [{'id': self.new_user1_repeat_username['id'], 'message': "User Already Exists"}],
+                "data": [{
+                    'id': self.new_user1_repeat_username['id'],
+                    'message': "User Already Exists"
+                }],
                 "status": 200
             }
             rv3 = au.post("/api/v1/users", json=self.new_user1) #repeating all values
@@ -274,13 +290,6 @@ class RunTestCase(ut.TestCase):
                 "status": 200
             }
             
-    def test_get_all_red_flags_call(self):
-        with app.test_client() as c:
-            rv = c.get("/api/v1/red-flags")
-            assert request.method == 'GET'
-            assert request.path == "/api/v1/red-flags"
-            assert request.get_json() == None
-
     def test_get_all_red_flags_ordinary_user(self):
         with app.test_client() as c:
             
@@ -304,13 +313,6 @@ class RunTestCase(ut.TestCase):
             rv = c.get("/api/v1/red-flags")
             assert Response.get_json(rv) == {"error": "json object error", "status": 400}
 
-    def test_get_user_call(self):
-        with app.test_client() as t:
-            rvv = t.get("/api/v1/users")
-            assert request.method == 'GET'
-            assert request.path == '/api/v1/users'
-            assert request.get_json() == None
-
     def test_get_user_given_username(self):
         with app.test_client() as cc:
             rv = cc.get("/api/v1/users", json=self.test_user_name_exists)
@@ -320,7 +322,13 @@ class RunTestCase(ut.TestCase):
                 "data": [self.new_user1],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {"data":[{"id":0, "message":"User does not exist"}], "status":200}
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": 0,
+                    "message":"User does not exist"
+                }],
+                "status":200
+            }
 
     def test_get_user_given_email(self):
         with app.test_client() as cc:
@@ -331,14 +339,13 @@ class RunTestCase(ut.TestCase):
                 "data": [self.new_user1],
                 "status": 200
             }
-            assert Response.get_json(rv2) == {"data":[{"id":0, "message":"User does not exist"}], "status":200}
-
-    def test_get_specific_red_flag_call(self):
-        with app.test_client() as t:
-            rvv = t.get("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
-            assert request.method == 'GET'
-            assert request.path == "/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data))
-            assert request.get_json() == None
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": 0,
+                    "message": "User does not exist"
+                }],
+                 "status":200
+            }
 
     def test_get_specific_red_flag_given_id(self):
         with app.test_client() as t:
@@ -353,6 +360,31 @@ class RunTestCase(ut.TestCase):
             assert Response.get_json(rv3)["data"] == [self.test_get_flag_records_under_inv]
             assert Response.get_json(rv4)["data"] == [self.test_get_flag_records_not_for_user]
             assert Response.get_json(rv5)["data"] == []           
+    
+    def test_red_flag_deletion(self):
+        with app.test_client() as t:
+            rv = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_data)))
+            rv2 = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id_inter)))
+            rv5 = t.delete("/api/v1/red-flags/{}".format(str(self.test_get_red_flag_id5_does_not_exist)))
+
+            assert Response.get_json(rv) == {
+                "data": [{
+                    "id": self.test_get_red_flag_id_data,
+                    "message": "red-flag has been deleted"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv2) == {
+                "data": [{
+                    "id": self.test_get_red_flag_id_inter,
+                    "message": "red-flag has been deleted"
+                }],
+                "status": 200
+            }
+            assert Response.get_json(rv5) == {
+                "error": "the flag doesn't exist",
+                "status": 404
+            }
 
 
 if __name__ == '__main__':
