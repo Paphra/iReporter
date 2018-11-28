@@ -16,7 +16,6 @@ install:
 
 script:
   - pytest
-  - bundle exec rspec
 
 after_success:
   - coveralls
