@@ -4,12 +4,15 @@ import datetime
 
 from flask import jsonify, request, Response
 
-from run import app
+from ..v1 import app
 
 
-class RunTestCase(ut.TestCase):
+class ApiTestCase1(ut.TestCase):
 
     def setUp(self):
+        self.flag_id_1 = 23219
+        self.flag_id_1_abscent = 23244
+
         self.flag_record_red = {
             "id": 23219,
             "title": "Corruption much",
@@ -149,19 +152,10 @@ class RunTestCase(ut.TestCase):
         self.abscent_email = {
             "email": "marian256@yahoo.com", "username": "Mariana"}
 
-        self.flag_id = 23219
-        self.flag_id_abscent = 23244
-
-        self.new_location = "23.1232 100.0938"
-        self.new_comment = "There is a snake in the garden"
-        self.new_title = "There is a snake in the garden"
-        self.new_type = "Red-Flag"
-        self.new_status = "Resolved"
-
         self.json_error = {"error": "json object error", "status": 400}
         self.no_flag_found = {"error": "No red flag found", "status": 404}
 
-        self.context = app.test_client()
+        self.context = app.app.test_client()
 
     def test_create_red_flag_record_data(self):
         with self.context as a:
@@ -195,14 +189,17 @@ class RunTestCase(ut.TestCase):
         with self.context as d:
             rv1 = d.post("/api/v1/users", json=self.new_user1)
             rv2 = d.post("/api/v1/users", json=self.new_user_admin)
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.new_user1['id'],
-                    "message": "New User Added!"}], "status": 201}
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": self.new_user_admin['id'],
-                    "message": "New Admin Added!"}], "status": 201}
+
+            def mock_res(given_id, msg):
+                return {
+                    "data": [{
+                        "id": given_id,
+                        "message": msg}], "status": 201}
+
+            assert Response.get_json(rv1) == mock_res(
+                self.new_user1['id'], "New User Added!")
+            assert Response.get_json(rv2) == mock_res(
+                self.new_user_admin['id'], "New Admin Added!")
 
     def test_add_user_no_json(self):
         with self.context as e:
@@ -215,18 +212,18 @@ class RunTestCase(ut.TestCase):
                 "/api/v1/users", json=self.new_user1_repeat_email)
             rv2 = f.post("/api/v1/users", json=self.new_user1_repeat_username)
             rv3 = f.post("/api/v1/users", json=self.new_user1)
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    'id': self.new_user1_repeat_email['id'],
-                    'message': "User Already Exists"}], "status": 200}
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    'id': self.new_user1_repeat_username['id'],
-                    'message': "User Already Exists"}], "status": 200}
-            assert Response.get_json(rv3) == {
-                "data": [{
-                    'id': self.new_user1['id'],
-                    'message': "User Already Exists"}], "status": 200}
+
+            def mock_res(given_id):
+                return {
+                    "data": [{
+                        'id': given_id,
+                        'message': "User Already Exists"}], "status": 200}
+
+            assert Response.get_json(rv1) == mock_res(
+                self.new_user1_repeat_email['id'])
+            assert Response.get_json(rv2) == mock_res(
+                self.new_user1_repeat_username['id'])
+            assert Response.get_json(rv3) == mock_res(self.new_user1['id'])
 
     def test_get_all_red_flags_ordinary_user(self):
         with self.context as g:
@@ -247,81 +244,44 @@ class RunTestCase(ut.TestCase):
             rv1 = i.get("/api/v1/red-flags")
             assert Response.get_json(rv1) == self.json_error
 
-    def test_get_user_given_username(self):
+    def test_get_user_given_username_email(self):
         with self.context as j:
             rv1 = j.get("/api/v1/users", json=self.existing_user_name)
             rv2 = j.get("/api/v1/users", json=self.abscent_user_name)
+            rv3 = j.get("/api/v1/users", json=self.existing_email)
+            rv4 = j.get("/api/v1/users", json=self.abscent_email)
             assert Response.get_json(rv1) == {
                 "data": [self.new_user1], "status": 200}
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": 0, "message": "User does not exist"}], "status": 200}
 
-    def test_get_user_given_email(self):
-        with self.context as k:
-            rv1 = k.get("/api/v1/users", json=self.existing_email)
-            rv2 = k.get("/api/v1/users", json=self.abscent_email)
-            assert Response.get_json(rv1) == {
+            def mock_res():
+                return {
+                    "data": [{
+                        "id": 0, "message": "User does not exist"}],
+                    "status": 200}
+
+            assert Response.get_json(rv2) == mock_res()
+            assert Response.get_json(rv3) == {
                 "data": [self.new_user1], "status": 200}
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": 0, "message": "User does not exist"}], "status": 200}
+            assert Response.get_json(rv4) == mock_res()
 
     def test_get_specific_red_flag_given_id(self):
         with self.context as l:
-            rv1 = l.get("/api/v1/red-flags/{}".format(str(self.flag_id)))
+            rv1 = l.get("/api/v1/red-flags/{}".format(str(self.flag_id_1)))
             rv2 = l.get("/api/v1/red-flags/{}".format(
-                str(self.flag_id_abscent)))
+                str(self.flag_id_1_abscent)))
             assert Response.get_json(rv1)["data"] == [self.flag_record_red]
             assert Response.get_json(rv2)["data"] == []
 
     def test_red_flag_deletion(self):
         with self.context as m:
-            rv1 = m.delete("/api/v1/red-flags/{}".format(str(self.flag_id)))
+            rv1 = m.delete("/api/v1/red-flags/{}".format(str(self.flag_id_1)))
             rv2 = m.delete("/api/v1/red-flags/{}".format(
-                str(self.flag_id_abscent)))
+                str(self.flag_id_1_abscent)))
             assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.flag_id,
+                    "id": self.flag_id_1,
                     "message": "red-flag has been deleted"}], "status": 200}
             assert Response.get_json(rv2) == self.no_flag_found
-
-    def test_red_flag_change_location(self):
-        with self.context as n:
-            self.edit_test_all(n, "location", self.new_location)
-
-    def test_red_flag_change_comment(self):
-        with self.context as o:
-            self.edit_test_all(o, "comment", self.new_comment)
-
-    def test_red_flag_change_title(self):
-        with self.context as p:
-            self.edit_test_all(p, "type", self.new_title)
-
-    def test_red_flag_change_type(self):
-        with self.context as q:
-            self.edit_test_all(q, "type", self.new_type)
-
-    def test_red_flag_change_status(self):
-        with self.context as r:
-            self.edit_test_all(r, "status", self.new_status)
-
-    def edit_test_all(self, ctxt, item, new_cont):
-        rv1 = ctxt.patch(
-            "/api/v1/red-flags/{0}/{1}".format(self.flag_id, item),
-            json={item: new_cont})
-        rv2 = ctxt.patch(
-            "/api/v1/red-flags/{0}/{1}".format(self.flag_id_abscent, item),
-            json={item: new_cont})
-        assert Response.get_json(rv1) == {
-            "data": [{
-                "id": self.flag_id,
-                "message": "Updated red-flag record's {0}".format(item)}],
-            "status": 200}
-        assert Response.get_json(rv2) == self.no_flag_found
-
-    def test_user_signin(self):
-        pass
 
     def tearDown(self):
         del self.context

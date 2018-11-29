@@ -18,8 +18,7 @@ install:
   - python -m pip install -U pip
 
 script: 
-  - pytest
-  - coverage
+  - pytest --cov=api api/tests/
 
 after_success:
   - coveralls
