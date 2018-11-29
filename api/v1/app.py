@@ -14,34 +14,29 @@ no_flag_found = {"error": "No red flag found", "status": 404}
 def post_red_flag():
     data = request.get_json()
     if data is not None:
-        title = data.get("title")
-        comment = data.get("comment")
-        local_id = 0
+        flag_is_there = False
         if len(all_users) > 0:
-            local_id = flag_exists(title, comment)
-        if local_id != 0:
+            flag_is_there = flag_exists(data.get("title"), data.get("comment"))
+        if flag_is_there:
             res = {
                 "status": 200,
-                "data": [{
-                        "id": local_id,
-                        "message": "Flag Already reported!"}]}
+                "data": [{"id": 0, "message": "Flag Already reported!"}]}
             return (jsonify(res), 200)
-        else:
-            add_new_flag(data)
-            res = {
-                "status": 201,
-                "data": [{
-                        "id": data.get("id"),
-                        "message": "Created red-flag record"}]}
-            return (jsonify(res), 201)
+        add_new_flag(data)
+        res = {
+            "status": 201,
+            "data": [{
+                "id": data.get("id"),
+                "message": "Created red-flag record"}]}
+        return (jsonify(res), 201)
     return (jsonify(json_error), 400)
 
 
 def flag_exists(title, comment):
     for flag in all_flags:
         if flag["title"] == title and flag["comment"] == comment:
-            return flag["id"]
-    return 0
+            return True
+    return False
 
 
 def add_new_flag(data):
