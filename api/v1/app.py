@@ -12,37 +12,31 @@ no_flag_found = {"error": "No red flag found", "status": 404}
 
 @app.route("/api/v1/red-flags", methods=['POST'])
 def post_red_flag():
-    try:
-        data = request.get_json()
-        title = data.get("title")
-        comment = data.get("comment")
-        local_id = flag_exists(title, comment)
-        if local_id != 0:
+    data = request.get_json()
+    if data is not None:
+        flag_is_there = False
+        if len(all_users) > 0:
+            flag_is_there = flag_exists(data.get("title"), data.get("comment"))
+        if flag_is_there:
             res = {
                 "status": 200,
-                "data": [{
-                        "id": local_id,
-                        "message": "Flag Already reported!"}]}
+                "data": [{"id": 0, "message": "Flag Already reported!"}]}
             return (jsonify(res), 200)
-        else:
-            add_new_flag(data)
-            res = {
-                "status": 201,
-                "data": [{
-                        "id": data.get("id"),
-                        "message": "Created red-flag record"}]}
-            return (jsonify(res), 201)
-    except:
-        return (jsonify(json_error), 400)
+        add_new_flag(data)
+        res = {
+            "status": 201,
+            "data": [{
+                "id": data.get("id"),
+                "message": "Created red-flag record"}]}
+        return (jsonify(res), 201)
+    return (jsonify(json_error), 400)
 
 
 def flag_exists(title, comment):
-    number_of_flags = len(all_flags)
-    if number_of_flags > 0:
-        for flag in all_flags:
-            if flag["title"] == title and flag["comment"] == comment:
-                return flag["id"]
-    return 0
+    for flag in all_flags:
+        if flag["title"] == title and flag["comment"] == comment:
+            return True
+    return False
 
 
 def add_new_flag(data):
@@ -54,19 +48,20 @@ all_users = []
 
 @app.route("/api/v1/red-flags", methods=["GET"])
 def get_all_flags():
-    try:
-        jdata = request.get_json()
+    jdata = request.get_json()
+    if jdata is not None:
         user_id = jdata.get("userId")
-        data = get_flags(user_id)
+        data = []
+        if user_is_admin(user_id):
+            data = all_flags
+        else:
+            data = get_flags(user_id)
         res = {"status": 200, "data": data}
         return (jsonify(res), 200)
-    except:
-        return (jsonify(json_error), 400)
+    return (jsonify(json_error), 400)
 
 
 def get_flags(user_id):
-    if user_is_admin(user_id):
-        return all_flags
     flags = []
     for flag in all_flags:
         if flag["createdBy"] == user_id:
@@ -83,9 +78,9 @@ def user_is_admin(user_id):
 
 @app.route("/api/v1/users", methods=["POST"])
 def add_new_user():
-    try:
-        jdata = request.get_json()
-        if user_exists(jdata['username'], jdata['email']):
+    jdata = request.get_json()
+    if jdata is not None:
+        if get_user_details(jdata["username"], jdata["email"])["id"] != 0:
             res = {
                 "status": 200,
                 "data": [{
@@ -100,28 +95,17 @@ def add_new_user():
             "status": 201,
             "data": [{"id": jdata['id'], "message": msg}]}
         return (jsonify(res), 201)
-    except:
-        return (jsonify(json_error), 400)
-
-
-def user_exists(username, email):
-    if len(all_users) == 0:
-        return False
-    for user in all_users:
-        if user['username'] == username or user['email'] == email:
-            return True
-    return False
+    return (jsonify(json_error), 400)
 
 
 @app.route("/api/v1/users", methods=["GET"])
 def get_user_given_username_or_email():
-    try:
-        jdata = request.get_json()
+    jdata = request.get_json()
+    if jdata is not None:
         data = get_user_details(jdata["username"], jdata["email"])
         res = {"status": 200, "data": [data]}
         return (jsonify(res), 200)
-    except:
-        return (jsonify(json_error), 400)
+    return (jsonify(json_error), 400)
 
 
 def get_user_details(username, email):
@@ -182,9 +166,9 @@ def edit_red_flag_location(red_flag_id):
 
 
 def edit_works(flag_id, item, request_obj):
-    try:
-        j_data = request_obj.get_json()
-        new_content = j_data[item]
+    jdata = request_obj.get_json()
+    if jdata is not None:
+        new_content = jdata[item]
         if edit_item(new_content, item, flag_id):
             res = {
                 "data": [{
@@ -193,8 +177,7 @@ def edit_works(flag_id, item, request_obj):
                 }], "status": 200}
             return (jsonify(res), 200)
         return (jsonify(no_flag_found), 404)
-    except:
-        return (jsonify(json_error), 400)
+    return (jsonify(json_error), 400)
 
 
 def edit_item(new_content, item, flag_id):

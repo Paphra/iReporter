@@ -1,21 +1,28 @@
 os: linux
 language: python
 python:
+  - "2.7.6"
   - "3.4.3"
 
 matrix:
-  include:
-    - os: linux
-      language: generic
-      env: PYTHON=3.4.3
+  - os: linux
+    language: generic
+    env: PYTHON=2.7.6
+    
+  - os: linux
+    language: generic
+    env: PYTHON=3.4.3
+  
 
 branches:
   only:
     - api
 
 install:
-  - pip install -r requirements.txt
   - python -m pip install -U pip
+  - pip install -r requirements.
+  - pip install pytest pytest-cov
+  - pip install coveralls
 
 script: 
   - pytest --cov=api api/tests/

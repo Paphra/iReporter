@@ -177,7 +177,7 @@ class ApiTestCase1(ut.TestCase):
         with self.context as b:
             rv1 = b.post("/api/v1/red-flags", json=self.flag_record_red)
             assert Response.get_json(rv1) == {
-                "data": [{"id": 23219, "message": "Flag Already reported!"}],
+                "data": [{"id": 0, "message": "Flag Already reported!"}],
                 "status": 200}
 
     def test_create_red_flag_record_no_data(self):
