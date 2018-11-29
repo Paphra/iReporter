@@ -1,36 +1,22 @@
+os: linux
 language: python
 python:
-  - "2.7"
-  - "3.4"
-env:
-  global:
-    - CC_TEST_REPORTER_ID=cd05fbdf9df84f150e822808f8055fba53a0dc816568e0436a4267de40430775
-    
+  - "3.4.3"
+
 matrix:
-    - USE_NETWORK=true
-    - USE_NETWORK=false
-    
-branches:
-  only:
-    - api
+  include:
+    - os: linux
+      language: generic
+      env: PYTHON=3.4.3
 
-# command to install dependencies
 install:
-  - pip install -U pip
-  - pip install pytest
   - pip install -r requirements.txt
-  - pip install python-coveralls
+  - python -m pip install -U pip
+  - python -m easy_install -U setuptools
 
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-script:
-  - pytest
-  - bundle exec rspec
-   
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+script: 
+  - pytest --cov=.
+  - coverage
 
 after_success:
   - coveralls

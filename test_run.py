@@ -1,14 +1,16 @@
+
 import unittest as ut
-from flask import jsonify, request, Response, url_for
-from run import app
 import datetime
+
+from flask import jsonify, request, Response
+
+from run import app
 
 
 class RunTestCase(ut.TestCase):
 
     def setUp(self):
-
-        self.test_new_flag_record_data = {
+        self.flag_record_red = {
             "id": 23219,
             "title": "Corruption much",
             "comment": "please, help us. We are dying.",
@@ -19,9 +21,8 @@ class RunTestCase(ut.TestCase):
             "status": "Draft",
             "Images": ["image1", "image2"],
             "Videos": ["video1", "video2"],
-            "otherFiles": ["file1", "file2"]
-        }
-        self.test_flag_records_inter = {
+            "otherFiles": ["file1", "file2"]}
+        self.flag_record_inter = {
             "id": 23210,
             "title": "Roads are not okay",
             "comment": "The bridge from kitaga to nyamitobola is down",
@@ -32,10 +33,8 @@ class RunTestCase(ut.TestCase):
             "status": "Draft",
             "Images": ["image1", "image2"],
             "Videos": ["video1", "video2"],
-            "otherFiles": ["file1", "file2"]
-        }
-
-        self.test_flag_records_under_inv = {
+            "otherFiles": ["file1", "file2"]}
+        self.flag_record_under_inv = {
             "id": 23212,
             "title": "Thief or the SACCO money",
             "comment": "There is someone stealing our sacco money",
@@ -46,9 +45,8 @@ class RunTestCase(ut.TestCase):
             "status": "Under Investigation",
             "Images": ["image1", "image2"],
             "Videos": ["video1", "video2"],
-            "otherFiles": ["file1", "file2"]
-        }
-        self.test_flag_records_not_for_user = {
+            "otherFiles": ["file1", "file2"]}
+        self.flag_record_not_for_user = {
             "id": 23239,
             "title": "Our Village is under siege",
             "comment": "We have corrupt official on ground",
@@ -59,10 +57,8 @@ class RunTestCase(ut.TestCase):
             "status": "Under Investigation",
             "Images": ["image1", "image2"],
             "Videos": ["video1", "video2"],
-            "otherFiles": ["file1", "file2"]
-        }
-
-        self.test_flag_records_resolved_not_for_user = {
+            "otherFiles": ["file1", "file2"]}
+        self.flag_record_resolved_not_for_user = {
             "id": 23230,
             "title": "The crops are dying off",
             "comment": "We need some water for irrigations",
@@ -73,44 +69,19 @@ class RunTestCase(ut.TestCase):
             "status": "Resolved",
             "Images": ["image1", "image2"],
             "Videos": ["video1", "video2"],
-            "otherFiles": ["file1", "file2"]
-        }
+            "otherFiles": ["file1", "file2"]}
 
-        self.successful_create = {
-            "data": [{
-                "id": 23219,
-                "message": "Created red-flag record"
-            }],
-            "status": 201
-        }
+        self.c_rf = "Created red-flag record"
+        self.successful_create1 = {
+            "data": [{"id": 23219, "message": self.c_rf}], "status": 201}
         self.successful_create2 = {
-            "data": [{
-                "id": 23210,
-                "message": "Created red-flag record"
-            }],
-            "status": 201
-        }
+            "data": [{"id": 23210, "message": self.c_rf}], "status": 201}
         self.successful_create3 = {
-            "data": [{
-                "id": 23212,
-                "message": "Created red-flag record"
-            }],
-            "status": 201
-        }
+            "data": [{"id": 23212, "message": self.c_rf}], "status": 201}
         self.successful_create4 = {
-            "data": [{
-                "id": 23239,
-                "message": "Created red-flag record"
-            }],
-            "status": 201
-        }
+            "data": [{"id": 23239, "message": self.c_rf}], "status": 201}
         self.successful_create5 = {
-            "data": [{
-                "id": 23230,
-                "message": "Created red-flag record"
-            }],
-            "status": 201
-        }
+            "data": [{"id": 23230, "message": self.c_rf}], "status": 201}
 
         self.new_user1 = {
             "id": 3324332234,
@@ -125,8 +96,7 @@ class RunTestCase(ut.TestCase):
             "registered": datetime.date.today().isoformat(),
             "gender": "Male",
             "occupation": "Software Developer",
-            "address": "Nalugala, Wakiso, Uganda"
-        }
+            "address": "Nalugala, Wakiso, Uganda"}
         self.new_user1_repeat_email = {
             "id": 3209932214,
             "username": "Xypindo",
@@ -140,8 +110,7 @@ class RunTestCase(ut.TestCase):
             "registered": datetime.date.today().isoformat(),
             "gender": "Female",
             "occupation": "Security Guard",
-            "address": "Gaba, Kampala, Uganda"
-        }
+            "address": "Gaba, Kampala, Uganda"}
         self.new_user1_repeat_username = {
             "id": 7209932218,
             "username": "Paphra",
@@ -155,9 +124,7 @@ class RunTestCase(ut.TestCase):
             "registered": datetime.date.today().isoformat(),
             "gender": "Male",
             "occupation": "Teacher",
-            "address": "Kisubi, Wakiso, Uganda"
-        }
-        
+            "address": "Kisubi, Wakiso, Uganda"}
         self.new_user_admin = {
             "id": 2322904328,
             "username": "Government",
@@ -171,394 +138,193 @@ class RunTestCase(ut.TestCase):
             "registered": datetime.date.today().isoformat(),
             "gender": "Male",
             "occupation": "Minister for defence",
-            "address": "Entebbe, Wakiso, Uganda"
-        }
+            "address": "Entebbe, Wakiso, Uganda"}
 
-        self.test_user_name_exists = {
-            "username": 'Paphra',
-            "email": "ppaapp@gmail.com"
-        }
-        self.test_user_name_does_not_exist = {
-            "username": "Lamwaka",
-            "email": "lamwa@yahoo.com"
-        }
-        self.test_email_exists = {
-            "email": 'paphra.me@gmail.com',
-            "username": "Paparo"
-        }
-        self.test_email_does_not_exist = {
-            "email": "marian256@yahoo.com",
-            "username": "Mariana"
-        }
-        self.test_all_user_info_exists = {
-            "username": 'Paphra',
-            "email": "paphra@gmail.com"
-        }
+        self.existing_user_name = {
+            "username": 'Paphra', "email": "ppaapp@gmail.com"}
+        self.abscent_user_name = {
+            "username": "Lamwaka", "email": "lamwa@yahoo.com"}
+        self.existing_email = {
+            "email": 'paphra.me@gmail.com', "username": "Paparo"}
+        self.abscent_email = {
+            "email": "marian256@yahoo.com", "username": "Mariana"}
 
-        self.test_flag_id_data = 23219
-        self.test_flag_id5_does_not_exist = 23244
+        self.flag_id = 23219
+        self.flag_id_abscent = 23244
 
-        self.test_new_location1 = "23.1232 100.0938"
+        self.new_location = "23.1232 100.0938"
+        self.new_comment = "There is a snake in the garden"
+        self.new_title = "There is a snake in the garden"
+        self.new_type = "Red-Flag"
+        self.new_status = "Resolved"
 
-        self.test_new_comment1 = "There is a snake in the garden"
+        self.json_error = {"error": "json object error", "status": 400}
+        self.no_flag_found = {"error": "No red flag found", "status": 404}
 
-        self.test_new_title1 = "There is a snake in the garden"
-
-        self.test_new_type1 = "Red-Flag"
-
-        self.test_new_status1 = "Resolved"
-
-    def tearDown(self):
-        pass
+        self.context = app.test_client()
 
     def test_create_red_flag_record_data(self):
-        with app.test_client() as c:
-
-            rv = c.post(
+        with self.context as a:
+            rv1 = a.post("/api/v1/red-flags", json=self.flag_record_red)
+            rv2 = a.post("/api/v1/red-flags", json=self.flag_record_inter)
+            rv3 = a.post("/api/v1/red-flags", json=self.flag_record_under_inv)
+            rv4 = a.post(
+                "/api/v1/red-flags", json=self.flag_record_not_for_user)
+            rv5 = a.post(
                 "/api/v1/red-flags",
-                json=self.test_new_flag_record_data
-            )
-            rv2 = c.post(
-                "/api/v1/red-flags",
-                json=self.test_flag_records_inter
-            )
-            rv3 = c.post(
-                "/api/v1/red-flags",
-                json=self.test_flag_records_under_inv
-            )
-            rv4 = c.post(
-                "/api/v1/red-flags",
-                json=self.test_flag_records_not_for_user
-            )
-            rv5 = c.post(
-                "/api/v1/red-flags",
-                json=self.test_flag_records_resolved_not_for_user
-            )
-
-            assert Response.get_json(rv) == self.successful_create
+                json=self.flag_record_resolved_not_for_user)
+            assert Response.get_json(rv1) == self.successful_create1
             assert Response.get_json(rv2) == self.successful_create2
             assert Response.get_json(rv3) == self.successful_create3
             assert Response.get_json(rv4) == self.successful_create4
             assert Response.get_json(rv5) == self.successful_create5
 
-    # test repeated data
     def test_create_red_flag_record_data_repeat(self):
-        with app.test_client() as d:
-            rv2 = d.post(
-                "/api/v1/red-flags",
-                json=self.test_new_flag_record_data
-            )
-
-            assert Response.get_json(rv2) == {
-                "data": [{
-                    "id": 23219, "message": "Flag Already reported!"
-                }],
-                "status": 200
-            }
+        with self.context as b:
+            rv1 = b.post("/api/v1/red-flags", json=self.flag_record_red)
+            assert Response.get_json(rv1) == {
+                "data": [{"id": 23219, "message": "Flag Already reported!"}],
+                "status": 200}
 
     def test_create_red_flag_record_no_data(self):
-        with app.test_client() as d:
-            rv2 = d.post("/api/v1/red-flags", json=None)
-
-            assert Response.get_json(rv2) == {
-                "error": "json object error",
-                "status": 400
-            }
+        with self.context as c:
+            rv1 = c.post("/api/v1/red-flags", json=None)
+            assert Response.get_json(rv1) == self.json_error
 
     def test_add_user_with_json_object(self):
-        with app.test_client() as au:
-            rv = au.post("/api/v1/users", json=self.new_user1)
-            rv4 = au.post("/api/v1/users", json=self.new_user_admin)
-
-            assert Response.get_json(rv) == {
+        with self.context as d:
+            rv1 = d.post("/api/v1/users", json=self.new_user1)
+            rv2 = d.post("/api/v1/users", json=self.new_user_admin)
+            assert Response.get_json(rv1) == {
                 "data": [{
                     "id": self.new_user1['id'],
-                    "message": "New User Added!"
-                }],
-                "status": 201
-            }
-            
-            assert Response.get_json(rv4) == {
+                    "message": "New User Added!"}], "status": 201}
+            assert Response.get_json(rv2) == {
                 "data": [{
                     "id": self.new_user_admin['id'],
-                    "message": "New Admin Added!"
-                }],
-                "status": 201
-            }
+                    "message": "New Admin Added!"}], "status": 201}
 
     def test_add_user_no_json(self):
-        with app.test_client() as c:
-            rv = c.post("/api/v1/users")
-            assert Response.get_json(rv) == {
-                "error": "json object error",
-                "status": 400
-            }
+        with self.context as e:
+            rv1 = e.post("/api/v1/users")
+            assert Response.get_json(rv1) == self.json_error
 
     def test_add_users_repeat(self):
-        with app.test_client() as au:
-            rv = au.post(
-                "/api/v1/users",
-                json=self.new_user1_repeat_email
-            )
-            assert Response.get_json(rv) == {
+        with self.context as f:
+            rv1 = f.post(
+                "/api/v1/users", json=self.new_user1_repeat_email)
+            rv2 = f.post("/api/v1/users", json=self.new_user1_repeat_username)
+            rv3 = f.post("/api/v1/users", json=self.new_user1)
+            assert Response.get_json(rv1) == {
                 "data": [{
                     'id': self.new_user1_repeat_email['id'],
-                    'message': "User Already Exists"
-                }],
-                "status": 200
-            }
-            rv2 = au.post("/api/v1/users", json=self.new_user1_repeat_username)
+                    'message': "User Already Exists"}], "status": 200}
             assert Response.get_json(rv2) == {
                 "data": [{
                     'id': self.new_user1_repeat_username['id'],
-                    'message': "User Already Exists"
-                }],
-                "status": 200
-            }
-            # repeating all values
-            rv3 = au.post("/api/v1/users", json=self.new_user1)
+                    'message': "User Already Exists"}], "status": 200}
             assert Response.get_json(rv3) == {
                 "data": [{
                     'id': self.new_user1['id'],
-                    'message': "User Already Exists"
-                }],
-                "status": 200
-            }
+                    'message': "User Already Exists"}], "status": 200}
 
     def test_get_all_red_flags_ordinary_user(self):
-        with app.test_client() as c:
-
-            rv = c.get("/api/v1/red-flags", json={"userId": 2324332223})
-            rv2 = c.get("/api/v1/red-flags", json={"userId": 2324331223})
-            rv3 = c.get("/api/v1/red-flags", json={"userId": 3324332234})
-
-            assert len(Response.get_json(rv)['data']) == 1
+        with self.context as g:
+            rv1 = g.get("/api/v1/red-flags", json={"userId": 2324332223})
+            rv2 = g.get("/api/v1/red-flags", json={"userId": 2324331223})
+            rv3 = g.get("/api/v1/red-flags", json={"userId": 3324332234})
+            assert len(Response.get_json(rv1)['data']) == 1
             assert len(Response.get_json(rv2)['data']) == 1
             assert len(Response.get_json(rv3)['data']) == 3
 
     def test_get_all_red_flags_admin(self):
-        with app.test_client() as c:
-            rv0 = c.get("/api/v1/red-flags", json={
-                "userId": 2322904328
-            })  # passed the admin id
-            assert len(Response.get_json(rv0)['data']) == 5
+        with self.context as h:
+            rv1 = h.get("/api/v1/red-flags", json={"userId": 2322904328})
+            assert len(Response.get_json(rv1)['data']) == 5
 
     def test_get_all_red_flags_no_json(self):
-        with app.test_client() as c:
-            rv = c.get("/api/v1/red-flags")
-            assert Response.get_json(rv) == {
-                "error": "json object error",
-                "status": 400
-            }
+        with self.context as i:
+            rv1 = i.get("/api/v1/red-flags")
+            assert Response.get_json(rv1) == self.json_error
 
     def test_get_user_given_username(self):
-        with app.test_client() as cc:
-            rv = cc.get("/api/v1/users", json=self.test_user_name_exists)
-            rv2 = cc.get(
-                "/api/v1/users",
-                json=self.test_user_name_does_not_exist
-            )
-
-            assert Response.get_json(rv) == {
-                "data": [self.new_user1],
-                "status": 200
-            }
+        with self.context as j:
+            rv1 = j.get("/api/v1/users", json=self.existing_user_name)
+            rv2 = j.get("/api/v1/users", json=self.abscent_user_name)
+            assert Response.get_json(rv1) == {
+                "data": [self.new_user1], "status": 200}
             assert Response.get_json(rv2) == {
                 "data": [{
-                    "id": 0,
-                    "message": "User does not exist"
-                }],
-                "status": 200
-            }
+                    "id": 0, "message": "User does not exist"}], "status": 200}
 
     def test_get_user_given_email(self):
-        with app.test_client() as cc:
-            rv = cc.get("/api/v1/users", json=self.test_email_exists)
-            rv2 = cc.get("/api/v1/users", json=self.test_email_does_not_exist)
-
-            assert Response.get_json(rv) == {
-                "data": [self.new_user1],
-                "status": 200
-            }
+        with self.context as k:
+            rv1 = k.get("/api/v1/users", json=self.existing_email)
+            rv2 = k.get("/api/v1/users", json=self.abscent_email)
+            assert Response.get_json(rv1) == {
+                "data": [self.new_user1], "status": 200}
             assert Response.get_json(rv2) == {
                 "data": [{
-                    "id": 0,
-                    "message": "User does not exist"
-                }],
-                "status": 200
-            }
+                    "id": 0, "message": "User does not exist"}], "status": 200}
 
     def test_get_specific_red_flag_given_id(self):
-        with app.test_client() as t:
-            rv = t.get(
-                "/api/v1/red-flags/{}".format(
-                    str(self.test_flag_id_data)
-                )
-            )
-
-            rv5 = t.get("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id5_does_not_exist)
-            ))
-
-            assert Response.get_json(rv)["data"] == [
-                self.test_new_flag_record_data
-            ]
-
-            assert Response.get_json(rv5)["data"] == []
+        with self.context as l:
+            rv1 = l.get("/api/v1/red-flags/{}".format(str(self.flag_id)))
+            rv2 = l.get("/api/v1/red-flags/{}".format(
+                str(self.flag_id_abscent)))
+            assert Response.get_json(rv1)["data"] == [self.flag_record_red]
+            assert Response.get_json(rv2)["data"] == []
 
     def test_red_flag_deletion(self):
-        with app.test_client() as t:
-            rv = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id_data)
-            ))
-
-            rv5 = t.delete("/api/v1/red-flags/{}".format(
-                str(self.test_flag_id5_does_not_exist)
-            ))
-
-            assert Response.get_json(rv) == {
+        with self.context as m:
+            rv1 = m.delete("/api/v1/red-flags/{}".format(str(self.flag_id)))
+            rv2 = m.delete("/api/v1/red-flags/{}".format(
+                str(self.flag_id_abscent)))
+            assert Response.get_json(rv1) == {
                 "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "red-flag has been deleted"
-                }],
-                "status": 200
-            }
-
-            assert Response.get_json(rv5) == {
-                "error": "the flag doesn't exist",
-                "status": 404
-            }
+                    "id": self.flag_id,
+                    "message": "red-flag has been deleted"}], "status": 200}
+            assert Response.get_json(rv2) == self.no_flag_found
 
     def test_red_flag_change_location(self):
-        with app.test_client() as c:
-            rv1 = c.patch(
-                "/api/v1/red-flags/{}/location".format(
-                    self.test_flag_id_data
-                ),
-                json={"location": self.test_new_location1})
-
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "Updated red-flag record's location"
-                }],
-                "status": 200
-            }
-
-            rv = c.patch(
-                "/api/v1/red-flags/{}/location".format(
-                    self.test_flag_id5_does_not_exist
-                ),
-                json={"location": self.test_new_location1})
-            assert Response.get_json(rv) == {
-                "error": "No red flag found",
-                "status": 404
-            }
+        with self.context as n:
+            self.edit_test_all(n, "location", self.new_location)
 
     def test_red_flag_change_comment(self):
-        with app.test_client() as c:
-            rv1 = c.patch(
-                "/api/v1/red-flags/{}/comment".format(
-                    self.test_flag_id_data
-                ),
-                json={"comment": self.test_new_comment1})
-
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "Updated red-flag record's comment"
-                }],
-                "status": 200
-            }
-
-            rv = c.patch(
-                "/api/v1/red-flags/{}/comment".format(
-                    self.test_flag_id5_does_not_exist
-                ),
-                json={"comment": self.test_new_comment1})
-            assert Response.get_json(rv) == {
-                "error": "No red flag found",
-                "status": 404
-            }
+        with self.context as o:
+            self.edit_test_all(o, "comment", self.new_comment)
 
     def test_red_flag_change_title(self):
-        with app.test_client() as c:
-            rv1 = c.patch(
-                "/api/v1/red-flags/{}/title".format(
-                    self.test_flag_id_data
-                ),
-                json={"title": self.test_new_title1})
- 
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "Updated red-flag record's title"
-                }],
-                "status": 200
-            }
- 
-            rv = c.patch(
-                "/api/v1/red-flags/{}/title".format(
-                    self.test_flag_id5_does_not_exist
-                ),
-                json={"title": self.test_new_title1})
-            assert Response.get_json(rv) == {
-                "error": "No red flag found",
-                "status": 404
-            }
- 
+        with self.context as p:
+            self.edit_test_all(p, "type", self.new_title)
+
     def test_red_flag_change_type(self):
-        with app.test_client() as c:
-            rv1 = c.patch(
-                "/api/v1/red-flags/{}/type".format(
-                    self.test_flag_id_data
-                ),
-                json={"type": self.test_new_type1})
-            
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "Updated red-flag record's type"
-                }],
-                "status": 200
-            }
-            
-            rv = c.patch(
-                "/api/v1/red-flags/{}/type".format(
-                    self.test_flag_id5_does_not_exist
-                ),
-                json={"type": self.test_new_type1})
-            assert Response.get_json(rv) == {
-                "error": "No red flag found",
-                "status": 404
-            }
+        with self.context as q:
+            self.edit_test_all(q, "type", self.new_type)
 
     def test_red_flag_change_status(self):
-        with app.test_client() as c:
-            rv1 = c.patch(
-                "/api/v1/red-flags/{}/status".format(
-                    self.test_flag_id_data
-                ),
-                json={"status": self.test_new_status1})
+        with self.context as r:
+            self.edit_test_all(r, "status", self.new_status)
 
-            assert Response.get_json(rv1) == {
-                "data": [{
-                    "id": self.test_flag_id_data,
-                    "message": "Updated red-flag record's status"
-                }],
-                "status": 200
-            }
+    def edit_test_all(self, ctxt, item, new_cont):
+        rv1 = ctxt.patch(
+            "/api/v1/red-flags/{0}/{1}".format(self.flag_id, item),
+            json={item: new_cont})
+        rv2 = ctxt.patch(
+            "/api/v1/red-flags/{0}/{1}".format(self.flag_id_abscent, item),
+            json={item: new_cont})
+        assert Response.get_json(rv1) == {
+            "data": [{
+                "id": self.flag_id,
+                "message": "Updated red-flag record's {0}".format(item)}],
+            "status": 200}
+        assert Response.get_json(rv2) == self.no_flag_found
 
-            rv = c.patch(
-                "/api/v1/red-flags/{}/status".format(
-                    self.test_flag_id5_does_not_exist
-                ),
-                json={"status": self.test_new_status1})
+    def test_user_signin(self):
+        pass
 
-            assert Response.get_json(rv) == {
-                "error": "No red flag found",
-                "status": 404
-            }
+    def tearDown(self):
+        del self.context
 
 if __name__ == '__main__':
     ut.main()

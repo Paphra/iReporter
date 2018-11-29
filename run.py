@@ -1,97 +1,78 @@
-from flask import Flask, request, Response, url_for, jsonify
-import datetime
-import json
 
-app = Flask(__name__, template_folder='/UI/', static_folder='/UI/assets/')
+from flask import Flask, request, Response, url_for, jsonify
+
+app = Flask(
+    __name__,
+    template_folder='/UI/',
+    static_folder='/UI/assets/')
+
+json_error = {"status": 400, "error": "json object error"}
+no_flag_found = {"error": "No red flag found", "status": 404}
+
 
 @app.route("/api/v1/red-flags", methods=['POST'])
 def post_red_flag():
-
     try:
         data = request.get_json()
         title = data.get("title")
         comment = data.get("comment")
-
-        local_id = 0
-
-        if len(all_flags) > 0:
-            local_id = flag_exists(title, comment)
-
+        local_id = flag_exists(title, comment)
         if local_id != 0:
             res = {
                 "status": 200,
-                "data": [
-                    {
+                "data": [{
                         "id": local_id,
-                        "message": "Flag Already reported!"
-                    }
-                ]
-            }
+                        "message": "Flag Already reported!"}]}
             return (jsonify(res), 200)
         else:
             add_new_flag(data)
             res = {
                 "status": 201,
-                "data": [
-                    {
+                "data": [{
                         "id": data.get("id"),
-                        "message":"Created red-flag record"
-                    }
-                ]
-            }
+                        "message": "Created red-flag record"}]}
             return (jsonify(res), 201)
     except:
-        res = {
-            "status": 400,
-            "error": "json object error"
-        }
-        return (jsonify(res), 400)
-    
-def flag_exists(title, comment):
-    for flag in all_flags:
-        if flag["title"] == title and flag["comment"] == comment:
-            return flag["id"]
+        return (jsonify(json_error), 400)
 
+
+def flag_exists(title, comment):
+    if len(all_flags) > 0:
+        for flag in all_flags:
+            if flag["title"] == title and flag["comment"] == comment:
+                return flag["id"]
     return 0
+
 
 def add_new_flag(data):
     all_flags.append(data)
 
 all_flags = []
-
 all_users = []
+
 
 @app.route("/api/v1/red-flags", methods=["GET"])
 def get_all_flags():
     try:
-        json_data = request.get_json()
-        user_id = json_data.get("userId")
+        jdata = request.get_json()
+        user_id = jdata.get("userId")
         data = get_flags(user_id)
-        res = {
-            "status": 200,
-            "data": data
-        }
-
+        res = {"status": 200, "data": data}
         return (jsonify(res), 200)
     except:
-        res = {
-            "status": 400,
-            "error": "json object error"
-        }
+        return (jsonify(json_error), 400)
 
-        return (jsonify(res), 400)
 
 def get_flags(user_id):
     if user_is_admin(user_id):
         return all_flags
     else:
-
         flags = []
         for flag in all_flags:
             if flag["createdBy"] == user_id:
                 flags.append(flag)
-
         return flags
+
 
 def user_is_admin(user_id):
     for user in all_users:
@@ -99,107 +80,71 @@ def user_is_admin(user_id):
                 return True
     return False
 
+
 @app.route("/api/v1/users", methods=["POST"])
 def add_new_user():
     try:
-        json_data = request.get_json()
-        uname = json_data['username']
-        email = json_data['email']
-
-        if user_exists(uname, email):
+        jdata = request.get_json()
+        if user_exists(jdata['username'], jdata['email']):
             res = {
                 "status": 200,
                 "data": [{
-                    "id": json_data["id"],
-                    "message": "User Already Exists"
-                }]
-            }
+                    "id": jdata["id"],
+                    "message": "User Already Exists"}]}
             return (jsonify(res), 200)
-        
-        add_user(json_data)
-
+        add_user(jdata)
         msg = "New User Added!"
-        if json_data["isAdmin"]:
+        if jdata["isAdmin"]:
             msg = "New Admin Added!"
         res = {
             "status": 201,
-            "data": [{
-                "id": json_data['id'],
-                "message": msg
-            }]
-        }
-
+            "data": [{"id": jdata['id'], "message": msg}]}
         return (jsonify(res), 201)
     except:
-        res = {
-            "status": 400,
-            "error": "json object error"
-        }
+        return (jsonify(json_error), 400)
 
-        return (jsonify(res), 400)
 
 def user_exists(username, email):
     if len(all_users) == 0:
         return False
-
     for user in all_users:
         if user['username'] == username or user['email'] == email:
             return True
-    
     return False
+
 
 @app.route("/api/v1/users", methods=["GET"])
 def get_user_given_username_or_email():
     try:
-        json_data = request.get_json()
-        username = json_data["username"]
-        email = json_data["email"]
-
-        data = get_user_details(username, email)
-        res = {
-            "status": 200,
-            "data": [data]
-        }
-
+        jdata = request.get_json()
+        data = get_user_details(jdata["username"], jdata["email"])
+        res = {"status": 200, "data": [data]}
         return (jsonify(res), 200)
-
     except:
-        res = {
-            "status":400,
-            "error":"json object error"
-        }
-        return (jsonify(res), 400)
+        return (jsonify(json_error), 400)
+
 
 def get_user_details(username, email):
+    user_doesnot_exist_json = {"id": 0, "message": "User does not exist"}
     if len(all_users) == 0:
-        return {"id":0, "message":"User does not exist"}
-
+        return user_doesnot_exist_json
     for user in all_users:
         if user['username'] == username or user["email"] == email:
             return user
+    return user_doesnot_exist_json
 
-    return {"id":0, "message":"User does not exist"}
 
-
-def add_user(json_data):
-    all_users.append(json_data)
+def add_user(jdata):
+    all_users.append(jdata)
 
 
 @app.route("/api/v1/red-flags/<flag_id>")
 def get_specific_flag(flag_id):
-
     flag = get_flag(flag_id)
-    if flag == None:
-        res = {
-            "status": 200,
-            "data": []
-        }
+    if flag is not None:
+        res = {"status": 200, "data": [flag]}
     else:
-        res = {
-            "status": 200,
-            "data": [flag]
-        }
-
+        res = {"status": 200, "data": []}
     return (jsonify(res), 200)
 
 
@@ -207,8 +152,8 @@ def get_flag(flag_id):
     for flag in all_flags:
         if flag["id"] == int(flag_id):
             return flag
-    
     return None
+
 
 @app.route("/api/v1/red-flags/<red_flag_id>", methods=["DELETE"])
 def delete_red_flag(red_flag_id):
@@ -217,202 +162,67 @@ def delete_red_flag(red_flag_id):
             "status": 200,
             "data": [{
                 "id": int(red_flag_id),
-                "message": "red-flag has been deleted"
-            }]
-        }
+                "message": "red-flag has been deleted"}]}
         return (jsonify(res), 200)
     else:
-        res = {
-            "status": 404,
-            "error": "the flag doesn't exist"
-        }
-        return (jsonify(res), 404)
+        return (jsonify(no_flag_found), 404)
+
 
 def delete_flag(flag_id):
     for flag in all_flags:
         if flag['id'] == int(flag_id):
             all_flags.remove(flag)
             return True
-    
     return False
+
 
 @app.route("/api/v1/red-flags/<red_flag_id>/location", methods=["PATCH"])
 def edit_red_flag_location(red_flag_id):
+    return edit_works(red_flag_id, "location", request)
+
+
+def edit_works(flag_id, item, request_obj):
     try:
-        j_data = request.get_json()
-        new_loc = j_data["location"]
-        if edit_location(new_loc, red_flag_id):
+        j_data = request_obj.get_json()
+        new_content = j_data[item]
+        if edit_item(new_content, item, flag_id):
             res = {
                 "data": [{
-                    "id": int(red_flag_id),
-                    "message": "Updated red-flag record's location"
-                }],
-                "status":200
-            }
+                    "id": int(flag_id),
+                    "message": "Updated red-flag record's {}".format(item)
+                }], "status": 200}
             return (jsonify(res), 200)
-        res = {
-            "error": "No red flag found",
-            "status":404
-        }
-        return (jsonify(res), 404)
+        return (jsonify(no_flag_found), 404)
     except:
-        res = {
-            "error": "json object error",
-            "status": 400
-        }
-        return (jsonify(res), 400)
-        
-def edit_location(new_loc, flag_id):
+        return (jsonify(json_error), 400)
+
+
+def edit_item(new_content, item, flag_id):
     for flag in all_flags:
         if flag["id"] == int(flag_id):
-            flag['loaction'] = new_loc
+            flag[item] = new_content
             return True
-    
     return False
 
 
 @app.route("/api/v1/red-flags/<red_flag_id>/comment", methods=["PATCH"])
 def edit_red_flag_comment(red_flag_id):
-    try:
-        j_data = request.get_json()
-        new_comm = j_data["comment"]
-        if edit_location(new_comm, red_flag_id):
-            res = {
-                "data": [{
-                    "id": int(red_flag_id),
-                    "message": "Updated red-flag record's comment"
-                }],
-                "status": 200
-            }
-            return (jsonify(res), 200)
-        res = {
-            "error": "No red flag found",
-            "status": 404
-        }
-        return (jsonify(res), 404)
-    except:
-        res = {
-            "error": "json object error",
-            "status": 400
-        }
-        return (jsonify(res), 400)
-
-
-def edit_comment(new_comm, flag_id):
-    for flag in all_flags:
-        if flag["id"] == int(flag_id):
-            flag['comment'] = new_comm
-            return True
-
-    return False
+    return edit_works(red_flag_id, "comment", request)
 
 
 @app.route("/api/v1/red-flags/<red_flag_id>/title", methods=["PATCH"])
 def edit_red_flag_title(red_flag_id):
-    try:
-        j_data = request.get_json()
-        new_title = j_data["title"]
-        if edit_location(new_title, red_flag_id):
-            res = {
-                "data": [{
-                    "id": int(red_flag_id),
-                    "message": "Updated red-flag record's title"
-                }],
-                "status": 200
-            }
-            return (jsonify(res), 200)
-        res = {
-            "error": "No red flag found",
-            "status": 404
-        }
-        return (jsonify(res), 404)
-    except:
-        res = {
-            "error": "json object error",
-            "status": 400
-        }
-        return (jsonify(res), 400)
-
-
-def edit_title(new_title, flag_id):
-    for flag in all_flags:
-        if flag["id"] == int(flag_id):
-            flag['title'] = new_title
-            return True
-
-    return False
+    return edit_works(red_flag_id, "title", request)
 
 
 @app.route("/api/v1/red-flags/<red_flag_id>/type", methods=["PATCH"])
 def edit_red_flag_type(red_flag_id):
-    try:
-        j_data = request.get_json()
-        new_type = j_data["type"]
-        if edit_location(new_type, red_flag_id):
-            res = {
-                "data": [{
-                    "id": int(red_flag_id),
-                    "message": "Updated red-flag record's type"
-                }],
-                "status": 200
-            }
-            return (jsonify(res), 200)
-        res = {
-            "error": "No red flag found",
-            "status": 404
-        }
-        return (jsonify(res), 404)
-    except:
-        res = {
-            "error": "json object error",
-            "status": 400
-        }
-        return (jsonify(res), 400)
-
-
-def edit_type(new_type, flag_id):
-    for flag in all_flags:
-        if flag["id"] == int(flag_id):
-            flag['type'] = new_type
-            return True
-
-    return False
+    return edit_works(red_flag_id, "type", request)
 
 
 @app.route("/api/v1/red-flags/<red_flag_id>/status", methods=["PATCH"])
 def edit_red_flag_status(red_flag_id):
-    try:
-        j_data = request.get_json()
-        new_status = j_data["status"]
-        if edit_location(new_status, red_flag_id):
-            res = {
-                "data": [{
-                    "id": int(red_flag_id),
-                    "message": "Updated red-flag record's status"
-                }],
-                "status": 200
-            }
-            return (jsonify(res), 200)
-        res = {
-            "error": "No red flag found",
-            "status": 404
-        }
-        return (jsonify(res), 404)
-    except:
-        res = {
-            "error": "json object error",
-            "status": 400
-        }
-        return (jsonify(res), 400)
-
-
-def edit_type(new_status, flag_id):
-    for flag in all_flags:
-        if flag["id"] == int(flag_id):
-            flag['status'] = new_status
-            return True
-            
-    return False
+    return edit_works(red_flag_id, "status", request)
 
 
 if __name__ == '__main__':
