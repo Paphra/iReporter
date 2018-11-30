@@ -143,15 +143,6 @@ class ApiTestCase1(ut.TestCase):
             "occupation": "Minister for defence",
             "address": "Entebbe, Wakiso, Uganda"}
 
-        self.existing_user_name = {
-            "username": 'Paphra', "email": "ppaapp@gmail.com"}
-        self.abscent_user_name = {
-            "username": "Lamwaka", "email": "lamwa@yahoo.com"}
-        self.existing_email = {
-            "email": 'paphra.me@gmail.com', "username": "Paparo"}
-        self.abscent_email = {
-            "email": "marian256@yahoo.com", "username": "Mariana"}
-
         self.json_error = {"error": "json object error", "status": 400}
         self.no_flag_found = {"error": "No red flag found", "status": 404}
 
@@ -243,26 +234,6 @@ class ApiTestCase1(ut.TestCase):
         with self.context as i:
             rv1 = i.get("/api/v1/red-flags")
             assert Response.get_json(rv1) == self.json_error
-
-    def test_get_user_given_username_email(self):
-        with self.context as j:
-            rv1 = j.get("/api/v1/users", json=self.existing_user_name)
-            rv2 = j.get("/api/v1/users", json=self.abscent_user_name)
-            rv3 = j.get("/api/v1/users", json=self.existing_email)
-            rv4 = j.get("/api/v1/users", json=self.abscent_email)
-            assert Response.get_json(rv1) == {
-                "data": [self.new_user1], "status": 200}
-
-            def mock_res():
-                return {
-                    "data": [{
-                        "id": 0, "message": "User does not exist"}],
-                    "status": 200}
-
-            assert Response.get_json(rv2) == mock_res()
-            assert Response.get_json(rv3) == {
-                "data": [self.new_user1], "status": 200}
-            assert Response.get_json(rv4) == mock_res()
 
     def test_get_specific_red_flag_given_id(self):
         with self.context as l:
