@@ -235,32 +235,5 @@ def edit_red_flag_status(red_flag_id):
     return edit_works(red_flag_id, "status", request)
 
 
-@app.errorhandler(405)
-def method_not_allowed():
-    return (jsonify({
-        "error": "method not allowed", "status": 405}), 405)
-
-
-@app.errorhandler(403)
-def not_permited():
-    return (jsonify({
-        "error": "you don't have permission to access this site",
-        "status": 405}), 405)
-
-
-@app.errorhandler(404)
-def not_found():
-    return (jsonify({
-        "error": "not found",
-        "status": 404}), 404)
-
-
-@app.errorhandler(400)
-def bad_request():
-    return (jsonify({
-        "error": "bad request",
-        "status": 400}), 400)
-
-
 if __name__ == '__main__':
     app.run()
