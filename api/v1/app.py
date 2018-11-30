@@ -124,16 +124,24 @@ def get_user_details(name, password):
     if len(all_users) == 0:
         return user_does_not_exist
     for user in all_users:
-        if (user['username'] == name or
-                user["email"] == name) and \
-                user["password"] == password:
+        if check_name(user, name) and check_password(user, password):
             return (jsonify({"status": 200, "data": [user]}), 200)
-        elif (user["username"] == name or
-                user["email"] == name) and \
-                user["password"] != password:
+        elif check_name(user, name) and not check_password(user, password):
             return (jsonify({
                 "error": "invalid password", "status": 401}), 401)
     return user_does_not_exist
+
+
+def check_name(user, name):
+    if (user['username'] == name or user["email"] == name):
+        return True
+    return False
+
+
+def check_password(user, password):
+    if user["password"] == password:
+        return True
+    return False
 
 
 def add_user(jdata):
