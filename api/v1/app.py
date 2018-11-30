@@ -8,12 +8,14 @@ app = Flask(
 
 json_error = {"status": 400, "error": "json object error"}
 no_flag_found = {"error": "No red flag found", "status": 404}
+all_flags = []
+all_users = []
 
 
 @app.route("/api/v1/red-flags", methods=['POST'])
 def post_red_flag():
     data = request.get_json()
-    if data is not None:
+    try:
         flag_is_there = False
         if len(all_users) > 0:
             flag_is_there = flag_exists(data.get("title"), data.get("comment"))
@@ -29,7 +31,8 @@ def post_red_flag():
                 "id": data.get("id"),
                 "message": "Created red-flag record"}]}
         return (jsonify(res), 201)
-    return (jsonify(json_error), 400)
+    except (TypeError, KeyError, AttributeError):
+        return (jsonify(json_error), 400)
 
 
 def flag_exists(title, comment):
@@ -42,14 +45,11 @@ def flag_exists(title, comment):
 def add_new_flag(data):
     all_flags.append(data)
 
-all_flags = []
-all_users = []
-
 
 @app.route("/api/v1/red-flags", methods=["GET"])
 def get_all_flags():
     jdata = request.get_json()
-    if jdata is not None:
+    try:
         user_id = jdata.get("userId")
         data = []
         if user_is_admin(user_id):
@@ -58,7 +58,8 @@ def get_all_flags():
             data = get_flags(user_id)
         res = {"status": 200, "data": data}
         return (jsonify(res), 200)
-    return (jsonify(json_error), 400)
+    except (KeyError, AttributeError, TypeError):
+        return (jsonify(json_error), 400)
 
 
 def get_flags(user_id):
@@ -72,15 +73,15 @@ def get_flags(user_id):
 def user_is_admin(user_id):
     for user in all_users:
         if user["id"] == user_id and user["isAdmin"]:
-                return True
+            return True
     return False
 
 
 @app.route("/api/v1/users", methods=["POST"])
 def add_new_user():
     jdata = request.get_json()
-    if jdata is not None:
-        if get_user_details(jdata["username"], jdata["email"])["id"] != 0:
+    try:
+        if user_exists(jdata["username"], jdata["email"])["id"] != 0:
             res = {
                 "status": 200,
                 "data": [{
@@ -95,27 +96,44 @@ def add_new_user():
             "status": 201,
             "data": [{"id": jdata['id'], "message": msg}]}
         return (jsonify(res), 201)
-    return (jsonify(json_error), 400)
+    except (TypeError, KeyError, AttributeError):
+        return (jsonify(json_error), 400)
+
+
+def user_exists(username, email):
+    if len(all_users) == 0:
+        return {"id": 0}
+    for user in all_users:
+        if user["email"] == email or user["username"] == username:
+            return user
+    return {"id": 0}
 
 
 @app.route("/api/v1/users", methods=["GET"])
-def get_user_given_username_or_email():
+def get_user_for_sign_in():
     jdata = request.get_json()
-    if jdata is not None:
-        data = get_user_details(jdata["username"], jdata["email"])
-        res = {"status": 200, "data": [data]}
-        return (jsonify(res), 200)
-    return (jsonify(json_error), 400)
+    try:
+        return get_user_details(jdata["name"], jdata["password"])
+    except (TypeError, KeyError, AttributeError):
+        return (jsonify(json_error), 400)
 
 
-def get_user_details(username, email):
-    user_doesnot_exist_json = {"id": 0, "message": "User does not exist"}
+def get_user_details(name, password):
+    user_does_not_exist = (jsonify({
+        "error": "User does not exist", "status": 404}), 404)
     if len(all_users) == 0:
-        return user_doesnot_exist_json
+        return user_does_not_exist
     for user in all_users:
-        if user['username'] == username or user["email"] == email:
-            return user
-    return user_doesnot_exist_json
+        if (user['username'] == name or
+                user["email"] == name) and \
+                user["password"] == password:
+            return (jsonify({"status": 200, "data": [user]}), 200)
+        elif (user["username"] == name or
+                user["email"] == name) and \
+                user["password"] != password:
+            return (jsonify({
+                "error": "invalid password", "status": 401}), 401)
+    return user_does_not_exist
 
 
 def add_user(jdata):
@@ -167,7 +185,7 @@ def edit_red_flag_location(red_flag_id):
 
 def edit_works(flag_id, item, request_obj):
     jdata = request_obj.get_json()
-    if jdata is not None:
+    try:
         new_content = jdata[item]
         if edit_item(new_content, item, flag_id):
             res = {
@@ -177,7 +195,8 @@ def edit_works(flag_id, item, request_obj):
                 }], "status": 200}
             return (jsonify(res), 200)
         return (jsonify(no_flag_found), 404)
-    return (jsonify(json_error), 400)
+    except (TypeError, KeyError, AttributeError):
+        return (jsonify(json_error), 400)
 
 
 def edit_item(new_content, item, flag_id):
