@@ -252,7 +252,14 @@ def method_not_allowed():
 def method_not_allowed():
     return (jsonify({
         "error": "not found",
-        "status": 405}), 405)
+        "status": 404}), 404)
+
+
+@app.errorhandler(400)
+def method_not_allowed():
+    return (jsonify({
+        "error": "bad request",
+        "status": 400}), 400)
 
 
 if __name__ == '__main__':
