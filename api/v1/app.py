@@ -248,5 +248,12 @@ def method_not_allowed():
         "status": 405}), 405)
 
 
+@app.errorhandler(404)
+def method_not_allowed():
+    return (jsonify({
+        "error": "not found",
+        "status": 405}), 405)
+
+
 if __name__ == '__main__':
     app.run()
