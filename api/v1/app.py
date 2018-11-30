@@ -242,21 +242,21 @@ def method_not_allowed():
 
 
 @app.errorhandler(403)
-def method_not_allowed():
+def not_permited():
     return (jsonify({
         "error": "you don't have permission to access this site",
         "status": 405}), 405)
 
 
 @app.errorhandler(404)
-def method_not_allowed():
+def not_found():
     return (jsonify({
         "error": "not found",
         "status": 404}), 404)
 
 
 @app.errorhandler(400)
-def method_not_allowed():
+def bad_request():
     return (jsonify({
         "error": "bad request",
         "status": 400}), 400)
