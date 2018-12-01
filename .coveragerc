@@ -22,7 +22,7 @@ exclude_lines =
 
 ignore_errors = True
 
-omit = */__init__.py, */app.py
+omit = */__init__.py, */app.py, */models/*
 
 [html]
 directory = coverage_html_report
