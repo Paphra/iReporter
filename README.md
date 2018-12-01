@@ -44,8 +44,7 @@ For accessing diffent features within the API, the following are used.
 ### Formats of JSON objects
 
 1.1 Posting a user - equest json
-
-'''python
+```python
 {
     "id" : Integer,
     "firstname" : String,
@@ -61,22 +60,18 @@ For accessing diffent features within the API, the following are used.
     "address": String,
     "occupation": String
 }
-'''
-
+```
 1.2 Posting a user - Response json
-
-'''python
+```python
 {
     "status": 201,
     "data": [{
         "id": Integer,
         "message": "New User Added!"}]
 }
-'''
-
+```
 2.1 Posting an incident - Request json
-
-'''python
+```python
 {
     "id" : Integer,
     "createdOn" : Date,
@@ -90,17 +85,13 @@ For accessing diffent features within the API, the following are used.
     "otherFiles": [File, File]
     "comment" : String
 }
-'''
-
+```
 2.2 Posting an incident - Response json
-
-'''python
+```python
 {
     "status" : Integer,
     "data" : [ {
         "id" : Integer, # red flag record primary key
         "message" : “Created red-flag record" } ]
 }
-'''
-
-
+```
