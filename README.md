@@ -38,7 +38,13 @@ For accessing diffent features within the API, the following are used.
 
 | METHOD | END POINT | Format JSON in request | Format of JSON in response | Description |
 |--------|-----------|------------------------|----------------------------|-------------|
-| POST   | /api/v1/users |
+| POST   | /api/v1/users | 1.1 | 1.2 | If user is added successfully. Else, an error message of code 200, meaning successful request but user already exists |
+| POST   | /api/v1/red-flags | 2.1 | 2.2 | For if the flag is created successfully. On error, 400 is returned for bad request|
+
+### Formats of JSON objects
+
+1.1 Posting a user - equest json
+
 '''python
 {
     "id" : Integer,
@@ -55,7 +61,10 @@ For accessing diffent features within the API, the following are used.
     "address": String,
     "occupation": String
 }
-'''|
+'''
+
+1.2 Posting a user - Response json
+
 '''python
 {
     "status": 201,
@@ -64,8 +73,9 @@ For accessing diffent features within the API, the following are used.
         "message": "New User Added!"}]
 }
 '''
-|If user is added successfully. Else, an error message of code 200, meaning successful request but user already exists|
-| POST  | /api/v1/red-flags |
+
+2.1 Posting an incident - Request json
+
 '''python
 {
     "id" : Integer,
@@ -80,7 +90,10 @@ For accessing diffent features within the API, the following are used.
     "otherFiles": [File, File]
     "comment" : String
 }
-'''|
+'''
+
+2.2 Posting an incident - Response json
+
 '''python
 {
     "status" : Integer,
@@ -89,4 +102,5 @@ For accessing diffent features within the API, the following are used.
         "message" : “Created red-flag record" } ]
 }
 '''
-| For if the flag is created successfully. On error, 400 is returned for bad request |
+
+
