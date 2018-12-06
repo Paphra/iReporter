@@ -40,16 +40,17 @@ function signup() {
     var passC = document.forms["form-signup"]["confirmPassword"].value;
     if (pass == passC) {
         // signup logic here
-        window.location.href = "profile.html"
+        window.location.replace("profile.html");
 
-        return true
+        return true;
 
     } else {
         document.forms["form-signup"]["password"].requestFocus;
-        window.location.href = "profile.html"
+        window.location.replace("profile.html");
         return false;
     }
-    window.location.href = "profile.html"
+    
+    window.location.replace("profile.html");
 }
 
 function checkUname(value) {
@@ -82,20 +83,20 @@ function signin() {
     var uname = document.forms["form-signin"]["login-name"].value;
     var pass = document.forms["form-signin"]["password"].value;
     var signErr = document.getElementById("signinError");
-    var passC = "0"
-    var unameC = "0"
+    var passC = "0";
+    var unameC = "0";
     if (pass == passC && uname == unameC) {
         // signin logic here
-        window.location.href = "profile.html"
-        return true
+        window.location.href = "profile.html";
+        return true;
 
     } else {
         signErr.innerHTML = "<p style='color:red;>Username or Password Incorrect!</p>";
-        window.location.href = "profile.html"
+        window.location.href = "profile.html";
         return false;
     }
     
-    window.location.href = "profile.html"
+    window.location.href = "profile.html";
 }
 
 function loadProfile() {
