@@ -49,6 +49,7 @@ function signup() {
         window.location.href = "profile.html"
         return false;
     }
+    window.location.href = "profile.html"
 }
 
 function checkUname(value) {
