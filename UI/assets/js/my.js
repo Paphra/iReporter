@@ -40,11 +40,13 @@ function signup() {
     var passC = document.forms["form-signup"]["confirmPassword"].value;
     if (pass == passC) {
         // signup logic here
+        window.location.href = "profile.html"
 
         return true
 
     } else {
         document.forms["form-signup"]["password"].requestFocus;
+        window.location.href = "profile.html"
         return false;
     }
 }
@@ -65,6 +67,7 @@ function checkPassword() {
         btnSubmit.disable = true;
     } else if (passC == '' || pass == '') {
         pwdErr.innerHTML = '';
+
         btnSubmit.disable = true;
     } else {
         pwdErr.innerHTML = "<p style='color:green;'>Password Match!</p>";
@@ -82,13 +85,16 @@ function signin() {
     var unameC = "0"
     if (pass == passC && uname == unameC) {
         // signin logic here
-
+        window.location.href = "profile.html"
         return true
 
     } else {
         signErr.innerHTML = "<p style='color:red;>Username or Password Incorrect!</p>";
+        window.location.href = "profile.html"
         return false;
     }
+    
+    window.location.href = "profile.html"
 }
 
 function loadProfile() {
