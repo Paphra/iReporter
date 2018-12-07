@@ -27,17 +27,19 @@ function signup() {
         + "" + (Math.floor(Math.random() * 10) + 1) + "" + (Math.floor(Math.random() * 10) + 1)
         + "" + (Math.floor(Math.random() * 10) + 1) + "" + (Math.floor(Math.random() * 10) + 1)
         + "" + (Math.floor(Math.random() * 10) + 1) + "" + (Math.floor(Math.random() * 10) + 1));
-
+/*
     var fname = document.forms["form-signup"]["firstName"].value;
     var lname = document.forms["form-signup"]["lastName"].value;
     var occupation = document.forms["form-signup"]["occupation"].value;
     var address = document.forms["form-signup"]["address"].value;
     var sex = document.forms["form-signup"]["gender"].value;
     var email = document.forms["form-signup"]["email"].value;
-    var phoneNumber = document.forms["form-signup"]["phoneNumber"].value;
+    var phoneNumber = document.forms["form-signup"]["phoneNumber"].value; */
+    
     var uname = document.forms["form-signup"]["username"].value;
     var pass = document.forms["form-signup"]["password"].value;
     var passC = document.forms["form-signup"]["confirmPassword"].value;
+    
     if (uname == "admin" || uname == "Admin"){
         window.location.href = "admin.html"
     }
