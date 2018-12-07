@@ -38,19 +38,22 @@ function signup() {
     var uname = document.forms["form-signup"]["username"].value;
     var pass = document.forms["form-signup"]["password"].value;
     var passC = document.forms["form-signup"]["confirmPassword"].value;
+    if (uname == "admin" || uname == "Admin"){
+        window.location.href = "admin.html"
+    }
     if (pass == passC) {
         // signup logic here
-        window.location.replace("profile.html");
+        window.location..href = "profile.html";
 
         return true;
 
     } else {
         document.forms["form-signup"]["password"].requestFocus;
-        window.location.replace("profile.html");
+        window.location.href = "profile.html";
         return false;
     }
     
-    window.location.replace("profile.html");
+    window.location.href = "profile.html";
 }
 
 function checkUname(value) {
